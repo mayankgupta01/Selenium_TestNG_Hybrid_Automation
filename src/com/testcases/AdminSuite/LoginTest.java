@@ -18,6 +18,7 @@ import com.readxls.ReadingTestSuiteXLWithRunmode;
 public class LoginTest{
 public String testName = "LoginTest";
 public String currentTestSuite = "AdminSuite";
+
 @BeforeClass
 	public void setTestCaseDataSetNumberToZero(){
 		CreateXLReport.testCaseDataSetNumber = 0;

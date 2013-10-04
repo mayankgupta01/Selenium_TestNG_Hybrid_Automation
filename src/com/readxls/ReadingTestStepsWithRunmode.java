@@ -113,8 +113,8 @@ public class ReadingTestStepsWithRunmode {
 											rowResult=(String)method[i].invoke(KEYWORD, OBJECT,DATA);
 											testResultSet.add(rowResult);
 									}catch(Exception e){
-										Logging.log("KEYWORD given in XL does not match with code");
-										e.printStackTrace();
+										Logging.log(String.format("%s in XL does not match with code for object %s and data %s", KEYWORD, OBJECT, DATA));
+										Logging.log(e.getMessage());
 									}
 										
 								}
