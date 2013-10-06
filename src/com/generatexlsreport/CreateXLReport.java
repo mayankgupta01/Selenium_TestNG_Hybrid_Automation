@@ -16,12 +16,18 @@ public class CreateXLReport {
 			int resultSetIndex = resultSet.size();
 			if(resultSetIndex > 0){
 				// 5 columns are supposed to be present in teststeps sheet after this result columns will follow
-				if(xl.getCellData(CreatePropertiesObjects.XL.getProperty("TEST_SUITE_TESTSTEPS_SHEET_NAME"), 5+testCaseDataSetNumber, 1).equals(""))
+				System.out.println(xl.getCellData(CreatePropertiesObjects.XL.getProperty("TEST_SUITE_TESTSTEPS_SHEET_NAME"), 5+testCaseDataSetNumber, 1));
+				if(xl.getCellData(CreatePropertiesObjects.XL.getProperty("TEST_SUITE_TESTSTEPS_SHEET_NAME"), 4+testCaseDataSetNumber, 1).equals("")){
 					xl.addColumn(CreatePropertiesObjects.XL.getProperty("TEST_SUITE_TESTSTEPS_SHEET_NAME"), "RESULT"+testCaseDataSetNumber);
-				
-				for(int rowNum=lastRowExecuted;rowNum >0; rowNum--){
+					Logging.log("Adding new result column - " + "Result" +testCaseDataSetNumber);
+				}
+					
+				System.out.println(lastRowExecuted);
+				for(int rowNum=lastRowExecuted;rowNum >1; rowNum--){
 					if(xl.getCellData(CreatePropertiesObjects.XL.getProperty("TEST_SUITE_TESTSTEPS_SHEET_NAME"), "TCID", rowNum).equals(testName) && resultSetIndex >= 0 ){
-						xl.setCellData(CreatePropertiesObjects.XL.getProperty("TEST_SUITE_TESTSTEPS_SHEET_NAME"), "RESULT"+testCaseDataSetNumber, rowNum, resultSet.get(resultSetIndex));
+						Logging.log("Result set has " + resultSetIndex + "elements");
+						xl.setCellData(CreatePropertiesObjects.XL.getProperty("TEST_SUITE_TESTSTEPS_SHEET_NAME"), "RESULT"+testCaseDataSetNumber, rowNum, resultSet.get(resultSetIndex - 1));
+						Logging.log("Setting cell data in RESULT" + testCaseDataSetNumber + ",row num = " + rowNum + " value being inserted is" + resultSet.get(resultSetIndex - 1) );
 						resultSetIndex--;
 					}
 						

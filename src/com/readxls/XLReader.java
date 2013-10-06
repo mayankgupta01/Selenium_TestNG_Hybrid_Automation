@@ -209,8 +209,10 @@ public class XLReader {
 			row = sheet.createRow(rowNum-1);
 		
 		cell = row.getCell(colNum);	
-		if (cell == null)
+		if (cell == null) {
 	        cell = row.createCell(colNum);
+//	        cell.setCellStyle()
+		}
 
 	    // cell style
 	    //CellStyle cs = workbook.createCellStyle();
@@ -223,6 +225,7 @@ public class XLReader {
 		workbook.write(fileOut);
 
 	    fileOut.close();	
+	    fis.close();
 
 		}
 		catch(Exception e){

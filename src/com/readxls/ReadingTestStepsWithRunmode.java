@@ -14,7 +14,7 @@ public class ReadingTestStepsWithRunmode {
 	public static int lastTestStepRowExecuted=0;
 	public static ArrayList<String> testResultSet;
 	public static Method method[];
-	public static ArrayList<String> currentTestName;
+	public static ArrayList<String> currentTestName = new ArrayList<String>();
 	
 	
 	public static boolean getRunModeOfTestCase(String testName, XLReader xls){
@@ -43,7 +43,7 @@ public class ReadingTestStepsWithRunmode {
 			// currentTestName.get(0).equals(testName) - this condition checks for iterations, after 1st iteration this condition will pass(first test case to be executed), for next test case both will fail
 			if(lastTestStepRowExecuted==0 || currentTestName.get(0).equals(testName)){
 				//deleting past result set if any before starting execution
-				CreateXLReport.deletePastResultSet(lastTestStepRowExecuted, xls);
+				//CreateXLReport.deletePastResultSet(lastTestStepRowExecuted, xls);
 				
 				for(rowNum=2; rowNum <= xls.getRowCount(CreatePropertiesObjects.XL.getProperty("TEST_SUITE_TESTSTEPS_SHEET_NAME")); rowNum++){
 					if(xls.getCellData(CreatePropertiesObjects.XL.getProperty("TEST_SUITE_TESTSTEPS_SHEET_NAME"), "TCID", rowNum).equals(testName)){
@@ -51,11 +51,18 @@ public class ReadingTestStepsWithRunmode {
 						String OBJECT = xls.getCellData(CreatePropertiesObjects.XL.getProperty("TEST_SUITE_TESTSTEPS_SHEET_NAME"), "OBJECT", rowNum);
 						String DATA = xls.getCellData(CreatePropertiesObjects.XL.getProperty("TEST_SUITE_TESTSTEPS_SHEET_NAME"), "DATA", rowNum);
 						
-						ReadingTestStepsWithRunmode.method = KEYWORD.getClass().getMethods();
+						Object keyword = Class.forName("com.keywords." + KEYWORD).newInstance();
+						ReadingTestStepsWithRunmode.method = keyword.getClass().getDeclaredMethods();
+						
+						// TO CHECK THAT RIGHT CLASS METHODS ARE COMING
+						for( int j = 0; j< method.length; j++)
+							System.out.println(method[j]);
+						/*System.out.println(KEYWORD.getClass().getMethods());
+						System.out.println(method.length);*/
 						for(int i=0;i < method.length; i++){
 							try{
 								if(method[i].getName().equals("do"+KEYWORD))
-									rowResult=(String)method[i].invoke(KEYWORD, OBJECT,DATA);
+									rowResult=(String)method[i].invoke(keyword,OBJECT,DATA);
 									testResultSet.add(rowResult);
 							}catch(Exception e){
 								Logging.log("KEYWORD given in XL does not match with code");
