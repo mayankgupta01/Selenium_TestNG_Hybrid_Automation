@@ -41,11 +41,11 @@ public String currentTestSuite = "AdminSuite";
 			CreateXLReport.testCaseDataSetNumber++;
 			if(data.get(CreatePropertiesObjects.XL.getProperty("TEST_SUITE_DATA_COLUMN_RUNMODE")).equals("N")){
 				Logging.log("Skipping the test as iteration " + CreateXLReport.testCaseDataSetNumber +" has runmode = N for TestCase = "+testName);
-				CreateXLReport.insertResultSetInTestStepsAsSkipped(testName, ReadingTestSuiteXLWithRunmode.currentTestSuiteXL.get(currentTestSuite));
+				CreateXLReport.insertResultSetInTestStepsAsSkipped(testName, currentTestSuite,ReadingTestSuiteXLWithRunmode.currentTestSuiteXL.get(currentTestSuite));
 				throw new SkipException("Skipping the testset as data sheet has RUNMODE=N");
 			}
 			
-			ReadingTestStepsWithRunmode.executeTestStepsSerially(testName, ReadingTestSuiteXLWithRunmode.currentTestSuiteXL.get(currentTestSuite), data);
+			ReadingTestStepsWithRunmode.executeTestStepsSerially(testName,currentTestSuite, ReadingTestSuiteXLWithRunmode.currentTestSuiteXL.get(currentTestSuite), data);
 			
 	}
 	}

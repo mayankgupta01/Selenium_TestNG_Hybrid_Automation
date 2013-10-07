@@ -31,7 +31,7 @@ public class ReadingTestStepsWithRunmode {
 		return false;		
 	}
 
-	public static void executeTestStepsSerially(String testName, XLReader xls, Hashtable<String, String> data) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, InstantiationException, ClassNotFoundException{
+	public static void executeTestStepsSerially(String testName,String currentTestSuite, XLReader xls, Hashtable<String, String> data) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, InstantiationException, ClassNotFoundException{
 		
 		
 		int sizeOfcurrentTestName;
@@ -47,7 +47,7 @@ public class ReadingTestStepsWithRunmode {
 				Logging.log(String.format("Execution starting from %s and ending at %s row number" , startTestCaseExecutionFromRow, testStepsSheetRowCount));
 				//deleting past result set if any before starting execution
 				//CreateXLReport.deletePastResultSet(lastTestStepRowExecuted, xls);
-				obj.executeKeywordsInTestCase(testName, xls, startTestCaseExecutionFromRow, testStepsSheetRowCount);
+				obj.executeKeywordsInTestCase(testName,currentTestSuite, xls, startTestCaseExecutionFromRow, testStepsSheetRowCount);
 				if(lastTestStepRowExecuted > 0){
 					currentTestName.add(testName);
 				}
@@ -60,7 +60,7 @@ public class ReadingTestStepsWithRunmode {
 					if(!currentTestName.get(sizeOfcurrentTestName - 1).equals(currentTestName.get(sizeOfcurrentTestName - 2))){
 						startTestCaseExecutionFromRow = lastTestStepRowExecuted+1;
 						Logging.log(String.format("Execution starting from %s and ending at %s row number" , startTestCaseExecutionFromRow, testStepsSheetRowCount));
-						obj.executeKeywordsInTestCase(testName, xls, startTestCaseExecutionFromRow, testStepsSheetRowCount);
+						obj.executeKeywordsInTestCase(testName,currentTestSuite, xls, startTestCaseExecutionFromRow, testStepsSheetRowCount);
 						/*for(rowNum=lastTestStepRowExecuted+1; rowNum <= xls.getRowCount(CreatePropertiesObjects.XL.getProperty("TEST_SUITE_TESTSTEPS_SHEET_NAME")); rowNum++){
 							if(xls.getCellData(CreatePropertiesObjects.XL.getProperty("TEST_SUITE_TESTSTEPS_SHEET_NAME"), "TCID", rowNum).equals(testName)){
 								String KEYWORD = xls.getCellData(CreatePropertiesObjects.XL.getProperty("TEST_SUITE_TESTSTEPS_SHEET_NAME"), "KEYWORD", rowNum);
@@ -87,7 +87,7 @@ public class ReadingTestStepsWithRunmode {
 					}
 					else{
 						Logging.log(String.format("Execution starting from %s and ending at %s row number" , startTestCaseExecutionFromRow, lastTestStepRowExecuted));
-						obj.executeKeywordsInTestCase(testName, xls, startTestCaseExecutionFromRow, lastTestStepRowExecuted);
+						obj.executeKeywordsInTestCase(testName,currentTestSuite, xls, startTestCaseExecutionFromRow, lastTestStepRowExecuted);
 						
 						/*for(rowNum= startTestCaseExecutionFromRow; rowNum <= lastTestStepRowExecuted; rowNum++){
 							if(xls.getCellData(CreatePropertiesObjects.XL.getProperty("TEST_SUITE_TESTSTEPS_SHEET_NAME"), "TCID", rowNum).equals(testName)){
@@ -119,7 +119,7 @@ public class ReadingTestStepsWithRunmode {
 
 			}
 	
-	public void executeKeywordsInTestCase(String testName, XLReader xls, int startFromRow, int endAtRow ) throws InstantiationException, IllegalAccessException, ClassNotFoundException{
+	public void executeKeywordsInTestCase(String testName, String currentTestSuite, XLReader xls, int startFromRow, int endAtRow ) throws InstantiationException, IllegalAccessException, ClassNotFoundException{
 		int rowNum;
 		String rowResult=null;
 		testResultSet = new ArrayList<String>();
@@ -152,7 +152,7 @@ public class ReadingTestStepsWithRunmode {
 				lastTestStepRowExecuted = rowNum;
      		}
 		}
-		CreateXLReport.insertResultSetInTestSteps(testName,testResultSet,xls,lastTestStepRowExecuted);
+		CreateXLReport.insertResultSetInTestSteps(testName,currentTestSuite,testResultSet,xls,lastTestStepRowExecuted);
 		
 	}
 }
