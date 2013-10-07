@@ -1,5 +1,4 @@
-package com.testcases;
-
+package com.testcases.AdminSuite;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Hashtable;
 
@@ -16,12 +15,10 @@ import com.readxls.ReadingDataSheetOfTestCase;
 import com.readxls.ReadingTestStepsWithRunmode;
 import com.readxls.ReadingTestSuiteXLWithRunmode;
 
-public class LoginTest {
-	// Need to define the testName for every testcase
-	//XLReader xls = new XLReader(System.getProperty("user.dir")+"\\src\\com\\config\\SuiteController.xlsx");
-	public String testName = "LoginTest";
-	public String currentTestSuite = "AdminSuite";
-	@BeforeClass
+public class AdminTest{
+public String testName = "AdminTest";
+public String currentTestSuite = "AdminSuite";
+@BeforeClass
 	public void setTestCaseDataSetNumberToZero(){
 		CreateXLReport.testCaseDataSetNumber = 0;
 		
@@ -33,7 +30,7 @@ public class LoginTest {
 	}
 	
 	@Test(dataProvider="getData")
-	public void doLoginTest(Hashtable<String,String> data) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException{
+	public void doLoginTest(Hashtable<String,String> data) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, InstantiationException, ClassNotFoundException{
 		if(!ReadingTestStepsWithRunmode.getRunModeOfTestCase(testName, ReadingTestSuiteXLWithRunmode.currentTestSuiteXL.get(currentTestSuite)))
 			throw new SkipException("Skipping the Test Case as RUNMODE in TestCases sheet is N");
 		if(data==null){
@@ -57,20 +54,8 @@ public class LoginTest {
 	public Object[][] getData(){
 		
 		return ReadingDataSheetOfTestCase.getData(testName, ReadingTestSuiteXLWithRunmode.currentTestSuiteXL.get(currentTestSuite));
-		
-		/*Object[][] data = new Object[2][4];
-		
-		data[0][0] = "admin";
-		data[0][1] = "1234";
-		data[0][2] = "Mozilla";
-		data[0][3] = "Y";
-		
-		data[1][0] = "Test";
-		data[1][1] = "6789";
-		data[1][2] = "Mozilla";
-		data[1][3] = "Y";
-		return data;*/
 	}
 	
 		
 }
+
