@@ -18,7 +18,6 @@ import com.readxls.ReadingTestSuiteXLWithRunmode;
 public class LoginTest{
 public String testName = "LoginTest";
 public String currentTestSuite = "AdminSuite";
-
 @BeforeClass
 	public void setTestCaseDataSetNumberToZero(){
 		CreateXLReport.testCaseDataSetNumber = 0;
@@ -31,7 +30,7 @@ public String currentTestSuite = "AdminSuite";
 	}
 	
 	@Test(dataProvider="getData")
-	public void doLoginTest(Hashtable<String,String> data) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException{
+	public void doLoginTest(Hashtable<String,String> data) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, InstantiationException, ClassNotFoundException{
 		if(!ReadingTestStepsWithRunmode.getRunModeOfTestCase(testName, ReadingTestSuiteXLWithRunmode.currentTestSuiteXL.get(currentTestSuite)))
 			throw new SkipException("Skipping the Test Case as RUNMODE in TestCases sheet is N");
 		if(data==null){

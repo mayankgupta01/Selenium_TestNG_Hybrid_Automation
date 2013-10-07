@@ -42,6 +42,7 @@ public class CreateTestCasesFromTestSuite {
 						testCase.createNewFile();
 						Logging.log("File has been created " + testCaseNames.get(rowNum - 2) );
 						createJavaTestCaseFiles(testCase, currentTestSuite, testCaseNames.get(rowNum - 2));
+						
 					}
 					
 			}
@@ -84,6 +85,7 @@ public class CreateTestCasesFromTestSuite {
 	    	print.println(sbclass);
 			
 			print.flush();
+			
 			
 			}catch(Exception e){
 		Logging.log("Unable to locate text file import.txt or testclass.txt OR unable to locate the targeted .java file");

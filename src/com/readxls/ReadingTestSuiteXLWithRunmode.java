@@ -17,10 +17,7 @@ public class ReadingTestSuiteXLWithRunmode {
 	public static XLReader masterTestSuiteXL = null;
 	public static Hashtable<String, XLReader> currentTestSuiteXL = new Hashtable<String, XLReader>();
 	
-	
-	
 	public static void main(String[] args) throws EmptyStackException{
-		
 		String currentTestSuite;
 		ArrayList<XmlSuite> suitePassedTorunTestNGXMLForAllSuites = new ArrayList<XmlSuite>();
 		int rowNum = 2; //Initializing to 2 because data will start from row 2

@@ -17,8 +17,10 @@ public class ReadingDataSheetOfTestCase {
 		int testStartRowNum = 1;
 		while(!xls.getCellData(CreatePropertiesObjects.XL.getProperty("TEST_SUITE_DATA_SHEET_NAME"), 0, testStartRowNum).equals(testName)){
 			testStartRowNum++;
-			if(xls.getCellData(CreatePropertiesObjects.XL.getProperty("TEST_SUITE_DATA_SHEET_NAME"), 0, testStartRowNum).equals(testName))
+			if(xls.getCellData(CreatePropertiesObjects.XL.getProperty("TEST_SUITE_DATA_SHEET_NAME"), 0, testStartRowNum).equals(testName)){
 				counter++;
+			}
+				
 		}
 		
 		if(counter==0 && testStartRowNum!=1){

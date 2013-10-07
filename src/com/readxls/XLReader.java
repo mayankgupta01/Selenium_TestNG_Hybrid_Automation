@@ -11,7 +11,10 @@ import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.xssf.usermodel.*;
 
+import com.logs.Logging;
 
+
+import java.awt.image.BufferedImageFilter;
 import java.io.*;
 import java.util.Calendar;
 
@@ -29,16 +32,19 @@ public class XLReader {
 	public XLReader(String path) {
 		
 		this.path=path;
+		openWorkbook(path); 
+		
+	}
+	private void openWorkbook(String path) {
 		try {
 			fis = new FileInputStream(path);
-			workbook = new XSSFWorkbook(fis);
+			workbook = new XSSFWorkbook(new BufferedInputStream(fis));
 			sheet = workbook.getSheetAt(0);
 			fis.close();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} 
-		
+		}
 	}
 	// returns the row count in a sheet
 	public int getRowCount(String sheetName){
@@ -139,10 +145,17 @@ public class XLReader {
 		cell = row.getCell(colNum);
 		if(cell==null)
 			return "";
-		
 	  if(cell.getCellType()==Cell.CELL_TYPE_STRING)
-		  return cell.getStringCellValue();
-	  else if(cell.getCellType()==Cell.CELL_TYPE_NUMERIC || cell.getCellType()==Cell.CELL_TYPE_FORMULA ){
+		  {
+		  	try{
+		  	return cell.getStringCellValue();
+		  	}
+		  	catch(Exception ex){
+		  		return cell.toString();
+		  	}
+		  }
+	  else
+	   if(cell.getCellType()==Cell.CELL_TYPE_NUMERIC || cell.getCellType()==Cell.CELL_TYPE_FORMULA ){
 		  
 		  String cellText  = String.valueOf(cell.getNumericCellValue());
 		  if (HSSFDateUtil.isCellDateFormatted(cell)) {
@@ -226,6 +239,8 @@ public class XLReader {
 
 	    fileOut.close();	
 	    fis.close();
+	    
+	    openWorkbook(path); 
 
 		}
 		catch(Exception e){
@@ -293,6 +308,8 @@ public class XLReader {
 		workbook.write(fileOut);
 
 	    fileOut.close();	
+	    
+	    openWorkbook(path);
 
 		}
 		catch(Exception e){
