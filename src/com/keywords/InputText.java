@@ -1,8 +1,21 @@
 package com.keywords;
 
+import org.junit.Assert;
+
+import com.listeners.ErrorUtil;
+
 public class InputText {
 
 	public String doInputText(String Object, String Input){
-		return "PASS";
+		String result = "FAIL";
+		if(result.equals("FAIL")){
+			try{
+				Assert.fail();
+			}catch(Throwable t){
+				ErrorUtil.addVerificationFailure(t);
+			}
+			
+		}
+		return "FAIL";
 	}
 }

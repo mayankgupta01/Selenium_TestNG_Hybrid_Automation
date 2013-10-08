@@ -7,7 +7,7 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-
+import com.createTestNG.CreateTestNGXML;
 import com.config.CreatePropertiesObjects;
 import com.generatexlsreport.CreateXLReport;
 import com.logs.Logging;
@@ -31,7 +31,7 @@ public String currentTestSuite = "AdminSuite";
 	
 	@Test(dataProvider="getData")
 	public void doLoginTest(Hashtable<String,String> data) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, InstantiationException, ClassNotFoundException{
-		if(!ReadingTestStepsWithRunmode.getRunModeOfTestCase(testName, ReadingTestSuiteXLWithRunmode.currentTestSuiteXL.get(currentTestSuite))){
+		if(!ReadingTestStepsWithRunmode.getRunModeOfTestCase(testName, CreateTestNGXML.currentTestSuiteXL.get(currentTestSuite))){
 			Logging.log(String.format("Skipping the Test Case - %s as RUNMODE in TestCases sheet in %s is N" , testName, currentTestSuite));
 			throw new SkipException("Skipping the Test Case as RUNMODE in TestCases sheet is N");
 		}
@@ -45,11 +45,11 @@ public String currentTestSuite = "AdminSuite";
 			CreateXLReport.testCaseDataSetNumber++;
 			if(data.get(CreatePropertiesObjects.XL.getProperty("TEST_SUITE_DATA_COLUMN_RUNMODE")).equals("N")){
 				Logging.log("Skipping the test as iteration " + CreateXLReport.testCaseDataSetNumber +" has runmode = N for TestCase = "+testName);
-				CreateXLReport.insertResultSetInTestStepsAsSkipped(testName,currentTestSuite, ReadingTestSuiteXLWithRunmode.currentTestSuiteXL.get(currentTestSuite));
+				CreateXLReport.insertResultSetInTestStepsAsSkipped(testName,currentTestSuite, CreateTestNGXML.currentTestSuiteXL.get(currentTestSuite));
 				throw new SkipException("Skipping the testset as data sheet has RUNMODE=N");
 			}
 			
-			ReadingTestStepsWithRunmode.executeTestStepsSerially(testName,currentTestSuite, ReadingTestSuiteXLWithRunmode.currentTestSuiteXL.get(currentTestSuite), data);
+			ReadingTestStepsWithRunmode.executeTestStepsSerially(testName,currentTestSuite, CreateTestNGXML.currentTestSuiteXL.get(currentTestSuite), data);
 			
 	}
 	}
@@ -57,7 +57,7 @@ public String currentTestSuite = "AdminSuite";
 	@DataProvider
 	public Object[][] getData(){
 		
-		return ReadingDataSheetOfTestCase.getData(testName, ReadingTestSuiteXLWithRunmode.currentTestSuiteXL.get(currentTestSuite));
+		return ReadingDataSheetOfTestCase.getData(testName, CreateTestNGXML.currentTestSuiteXL.get(currentTestSuite));
 	}
 	
 		

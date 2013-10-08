@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE project [
+]>
+
+<project name="Learning TestNG" default="usage" basedir=".">  
+
+<!-- ========== Initialize Properties =================================== -->
+    <property environment="env"/>
+    
+     <property name="ws.home" value="${basedir}"/>
+	<property name="ws.jars" value="F:\Installed Software\TestNGHybridProjectJars"/>
+    <property name="test.dest" value="${ws.home}\build"/>
+    <property name="test.src" value="${ws.home}\src"/>
+	<property name="ng.result" value="test-output"/>
+    
+    <!--target name="start-selenium-server">
+        <java jar="${ws.home}/lib/selenium-server.jar"/>
+    </target-->
+
+    <target name="setClassPath" unless="test.classpath">
+        <path id="classpath_jars">
+            <fileset dir="${ws.jars}" includes="*.jar"/>
+        </path>
+        <pathconvert pathsep=":" 
+            property="test.classpath" 
+            refid="classpath_jars"/>
+    </target>
+
+    <target name="init" depends="setClassPath">
+        <tstamp>
+            <format property="start.time" pattern="MM/dd/yyyy hh:mm aa" />
+        </tstamp>
+        <condition property="ANT" 
+            value="${env.ANT_HOME}/bin/ant.bat" 
+            else="${env.ANT_HOME}/bin/ant">
+                    <os family="windows" />
+        </condition>
+        <taskdef name="testng" classpath="${test.classpath}"
+               classname="org.testng.TestNGAntTask" />
+    
+    </target>
+  
+    <!-- all -->
+    <target name="all">
+    </target>
+
+    <!-- clean -->
+    <target name="clean">
+        <delete dir="${test.dest}"/>
+    </target>
+
+    <!-- compile -->
+    <target name="compile" depends="init, clean" > 
+		<delete includeemptydirs="true" quiet="true">
+            <fileset dir="${test.dest}" includes="**/*"/>
+		</delete>
+        <echo message="making directory..."/>
+		<mkdir dir="${test.dest}"/>
+        <echo message="classpath------: ${test.classpath}"/>
+        <echo message="compiling..."/>
+        <javac 
+            debug="true" 
+            destdir="${test.dest}" 
+            srcdir="${test.src}" 
+            target="1.5" 
+            classpath="${test.classpath}"
+        >
+        </javac>
+      </target>
+
+    <!-- build -->
+    <target name="build" depends="init">
+    </target>
+
+    <!-- run -->
+    <target name="run" depends="compile">
+        <echo message="run classpath location ----:${test.dest}" />
+<!--         <jar destfile="ReadingTestSuiteXLWithRunmode.jar"
+             basedir="${test.dest}"
+             includes="**/*.class"
+             /> -->
+        <java classname="com.readxls.ReadingTestSuiteXLWithRunmode" fork="true">
+            <classpath>
+                <pathelement location="${test.dest}" />
+                <pathelement location="${ws.jars}/dom4j-1.1.jar" />
+                <pathelement location="${ws.jars}/poi-3.6-20091214.jar" />
+                <pathelement location="${ws.jars}/poi-ooxml-3.6-20091214.jar" />
+                <pathelement location="${ws.jars}/poi-ooxml-schemas-3.6-20091214.jar" />
+                <pathelement location="${ws.jars}/xmlbeans-2.3.0.jar" />
+                <pathelement location="${ws.jars}/testng.jar" />
+                
+                <pathelement location="${ws.jars}/log4j-1.2.14.jar" />
+                <pathelement location="${ws.jars}/logging-selenium-1.2.jar" />
+                
+            </classpath>
+            </java>
+            <!-- <classpath>
+                 <path refid="classpath_jars" />
+                <path location="${test.dest}" />
+            </classpath> -->
+        
+       <!--   <testng classpath="${test.classpath}:${test.dest}" suitename="suite1">	
+            <xmlfileset dir="${ws.home}" includes="testng.xml"/>
+        </testng> -->
+        <!--
+        <testng classpath="${test.classpath}:${test.dest}" groups="fast">
+            <classfileset dir="${test.dest}" includes="example1/*.class"/>
+        </testng>
+        -->
+    </target>
+
+    <target name="runTestNG" depends="run, compile">
+        <echo message="run classpath location ----:${test.dest}" />
+<!--         <jar destfile="ReadingTestSuiteXLWithRunmode.jar"
+             basedir="${test.dest}"
+             includes="**/*.class"
+             /> -->
+        <java classname="com.createTestNG.CreateTestNGXML" fork="true">
+            <classpath>
+                <pathelement location="${test.dest}" />
+                <pathelement location="${ws.jars}/dom4j-1.1.jar" />
+                <pathelement location="${ws.jars}/poi-3.6-20091214.jar" />
+                <pathelement location="${ws.jars}/poi-ooxml-3.6-20091214.jar" />
+                <pathelement location="${ws.jars}/poi-ooxml-schemas-3.6-20091214.jar" />
+                <pathelement location="${ws.jars}/xmlbeans-2.3.0.jar" />
+                <pathelement location="${ws.jars}/testng.jar" />
+                
+                <pathelement location="${ws.jars}/log4j-1.2.14.jar" />
+                <pathelement location="${ws.jars}/logging-selenium-1.2.jar" />
+    </classpath>
+    </java>
+    </target>
+    <target name="usage">
+        <echo>
+            ant run will execute the test
+        </echo>
+    </target>
+
+	<path id="test.c">
+	        <fileset dir="${ws.jars}" includes="*.jar"/>
+	</path>
+	
+	  <target name="makexsltreports" >
+	        <mkdir dir="C:\Users\Mayank\Desktop\XSLT_Reports\output"/>
+
+	        <xslt in="${basedir}\${ng.result}\testng-results.xml" style="${basedir}\src\xslt\testng-results.xsl"
+	              out="C:\Users\Mayank\Desktop\XSLT_Reports\output\index.html" classpathref="test.c" processor="SaxonLiaison">
+	            <param name="testNgXslt.outputDir" expression="C:\Users\Mayank\Desktop\XSLT_Reports\output"/>
+	            <param name="testNgXslt.showRuntimeTotals" expression="true"/>
+	            <param expression="true" name="testNGXslt.sortTestCaseLinks"/>
+               <param expression="FAIL,SKIP,PASS,BY_CLASS" name="testNgXslt.testDetailsFilter"/>
+               <!-- <classpath refid="classpath_jars"/> -->
+         	<!-- 	<classpath>
+                <pathelement location="${ws.jars}/saxon-8.7.jar" />
+                </classpath> -->
+	        </xslt>
+	    </target>
+
+    <!-- ****************** targets not used ****************** -->
+ 
+</project>

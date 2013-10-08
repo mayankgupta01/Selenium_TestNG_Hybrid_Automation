@@ -23,6 +23,8 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 //import org.apache.poi.hssf.usermodel.HSSFHyperlink;
 
+import com.logs.Logging;
+
 
 public class ExcelWriter {
 	//public static String filename = System.getProperty("user.dir")+"\\src\\com\\config\\SuiteController.xlsx";
@@ -313,6 +315,7 @@ public class ExcelWriter {
 		    	workbook.write(brOut);
 			    brOut.close();
 		    }catch(Exception e){
+		    	Logging.log("GOT PROCESS LOCK EXCEPTION");
 		    	Thread.sleep(2000);
 		    	BufferedOutputStream brOut = new BufferedOutputStream(new FileOutputStream(path));
 		    	workbook.write(brOut);
