@@ -12,7 +12,7 @@ import org.testng.xml.XmlTest;
 import com.logs.Logging;
 
 public class CreateTestNGXML {
-
+	
 	public static XmlSuite createTestNGXMLForCurrentSuite(String currentTestSuite, ArrayList<String> testCases){
 		XmlSuite currentSuite = new XmlSuite();
 		currentSuite.setName(currentTestSuite);

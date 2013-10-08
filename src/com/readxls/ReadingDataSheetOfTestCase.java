@@ -15,7 +15,7 @@ public class ReadingDataSheetOfTestCase {
 		
 		// finding the row corresponding to test case
 		int testStartRowNum = 1;
-		while(!xls.getCellData(CreatePropertiesObjects.XL.getProperty("TEST_SUITE_DATA_SHEET_NAME"), 0, testStartRowNum).equals(testName)){
+		while(!xls.getCellData(CreatePropertiesObjects.XL.getProperty("TEST_SUITE_DATA_SHEET_NAME"), 0, testStartRowNum).equals(testName) && testStartRowNum < xls.getRowCount(CreatePropertiesObjects.XL.getProperty("TEST_SUITE_DATA_SHEET_NAME"))){
 			testStartRowNum++;
 			if(xls.getCellData(CreatePropertiesObjects.XL.getProperty("TEST_SUITE_DATA_SHEET_NAME"), 0, testStartRowNum).equals(testName)){
 				counter++;

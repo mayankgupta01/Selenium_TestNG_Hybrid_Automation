@@ -170,9 +170,17 @@ public class ExcelWriter {
 	    
 	
 		    
+	    try{
 	    	BufferedOutputStream brOut = new BufferedOutputStream(new FileOutputStream(path));
 	    	workbook.write(brOut);
 		    brOut.close();
+	    }catch(Exception e){
+	    	Thread.sleep(2000);
+	    	BufferedOutputStream brOut = new BufferedOutputStream(new FileOutputStream(path));
+	    	workbook.write(brOut);
+		    brOut.close();
+	    }
+    	
 	   
 	    
 	    
@@ -305,7 +313,7 @@ public class ExcelWriter {
 		    	workbook.write(brOut);
 			    brOut.close();
 		    }catch(Exception e){
-		    	Thread.sleep(1000);
+		    	Thread.sleep(2000);
 		    	BufferedOutputStream brOut = new BufferedOutputStream(new FileOutputStream(path));
 		    	workbook.write(brOut);
 			    brOut.close();
@@ -383,9 +391,17 @@ public class ExcelWriter {
 	    cell.setHyperlink(link);
 	    cell.setCellStyle(hlink_style);
 	    sheet.setColumnWidth(colNum, 5000);
-	    BufferedOutputStream brOut = new BufferedOutputStream(new FileOutputStream(path));
-	    workbook.write(brOut);
-	    brOut.close();	
+	    try{
+	    	BufferedOutputStream brOut = new BufferedOutputStream(new FileOutputStream(path));
+	    	workbook.write(brOut);
+		    brOut.close();
+	    }catch(Exception e){
+	    	Thread.sleep(2000);
+	    	BufferedOutputStream brOut = new BufferedOutputStream(new FileOutputStream(path));
+	    	workbook.write(brOut);
+		    brOut.close();
+	    }
+    	
 	    
 	    openWorkbook(path);
 
@@ -406,9 +422,17 @@ public class ExcelWriter {
 		try {
 			 workbook.createSheet(sheetname);	
 			    //sheet.setColumnWidth(colNum, 5000);
-			    BufferedOutputStream brOut = new BufferedOutputStream(new FileOutputStream(path));
-			    workbook.write(brOut);
-			    brOut.close();			    
+			    try{
+			    	BufferedOutputStream brOut = new BufferedOutputStream(new FileOutputStream(path));
+			    	workbook.write(brOut);
+				    brOut.close();
+			    }catch(Exception e){
+			    	Thread.sleep(4000);
+			    	BufferedOutputStream brOut = new BufferedOutputStream(new FileOutputStream(path));
+			    	workbook.write(brOut);
+				    brOut.close();
+			    }
+		    			    
 		} catch (Exception e) {			
 			e.printStackTrace();
 			return false;
@@ -426,9 +450,17 @@ public class ExcelWriter {
 		try {
 			workbook.removeSheetAt(index);
 		    //sheet.setColumnWidth(colNum, 5000);
-		    BufferedOutputStream brOut = new BufferedOutputStream(new FileOutputStream(path));
-		    workbook.write(brOut);
-		    brOut.close();			    
+		    try{
+		    	BufferedOutputStream brOut = new BufferedOutputStream(new FileOutputStream(path));
+		    	workbook.write(brOut);
+			    brOut.close();
+		    }catch(Exception e){
+		    	Thread.sleep(2000);
+		    	BufferedOutputStream brOut = new BufferedOutputStream(new FileOutputStream(path));
+		    	workbook.write(brOut);
+			    brOut.close();
+		    }
+	    				    
 		} catch (Exception e) {			
 			e.printStackTrace();
 			return false;
@@ -468,9 +500,17 @@ public class ExcelWriter {
 	        cell.setCellStyle(style);
 	        
 		    //sheet.setColumnWidth(colNum, 5000);
-		    BufferedOutputStream brOut = new BufferedOutputStream(new FileOutputStream(path));
-		    workbook.write(brOut);
-		    brOut.close();		    
+		    try{
+		    	BufferedOutputStream brOut = new BufferedOutputStream(new FileOutputStream(path));
+		    	workbook.write(brOut);
+			    brOut.close();
+		    }catch(Exception e){
+		    	Thread.sleep(2000);
+		    	BufferedOutputStream brOut = new BufferedOutputStream(new FileOutputStream(path));
+		    	workbook.write(brOut);
+			    brOut.close();
+		    }
+	    		    
 
 		}catch(Exception e){
 			e.printStackTrace();

@@ -64,7 +64,7 @@ public class CreateXLReport {
 				}
 				Logging.log(String.format("Going to check the existence of Result column with testCaseDataSetNumber suffix , The testCaseDataSetNumber value is %s", testCaseDataSetNumber));
 				Logging.log(String.format("Get cell data for RESULT column returns value %s", xl.getCellData("RESULT-" + formattedDate, 3+testCaseDataSetNumber, 1)));
-				Logging.log(String.format("IS THE COLUMN RESULT"+testCaseDataSetNumber+"NOT PRESENT?  %s", xl.getCellData("RESULT-" + formattedDate, 3+testCaseDataSetNumber, 1).equals("")));
+				Logging.log(String.format("IS THE COLUMN RESULT"+testCaseDataSetNumber+"NOT PRESENT?  %s", ex.getCellData("RESULT-" + formattedDate, 3+testCaseDataSetNumber, 1).equals("")));
 				if(ex.getCellData("RESULT-" + formattedDate, 3+testCaseDataSetNumber, 1).equals("")){
 					ex.addColumn("RESULT-" + formattedDate, "RESULT"+testCaseDataSetNumber);
 					Logging.log("Adding new result column  in result sheet - " + "RESULT-" +formattedDate+ "Column name = RESULT" + testCaseDataSetNumber);

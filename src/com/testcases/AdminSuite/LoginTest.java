@@ -10,7 +10,6 @@ import org.testng.annotations.Test;
 
 import com.config.CreatePropertiesObjects;
 import com.generatexlsreport.CreateXLReport;
-import com.generatexlsreport.CreateXLReportBeta;
 import com.logs.Logging;
 import com.readxls.ReadingDataSheetOfTestCase;
 import com.readxls.ReadingTestStepsWithRunmode;
@@ -63,4 +62,5 @@ public String currentTestSuite = "AdminSuite";
 	
 		
 }
+
 
