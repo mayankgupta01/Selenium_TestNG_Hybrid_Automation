@@ -109,7 +109,7 @@
         -->
     </target>
 
-    <target name="runTestNG" depends="run, compile">
+    <target name="runTestNG" depends="compile">
         <echo message="run classpath location ----:${test.dest}" />
 <!--         <jar destfile="ReadingTestSuiteXLWithRunmode.jar"
              basedir="${test.dest}"

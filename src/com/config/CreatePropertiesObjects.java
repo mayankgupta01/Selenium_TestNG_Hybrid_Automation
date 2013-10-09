@@ -14,15 +14,15 @@ public class CreatePropertiesObjects {
 	private CreatePropertiesObjects(){
 		try{
 			OR = new Properties();
-			fs = new FileInputStream(System.getProperty("user.dir")+"//src//com//config//OR.properties");
+			fs = new FileInputStream(System.getProperty("user.dir")+"\\resources\\OR.properties");
 			OR.load(fs);
 			
 			CONFIG = new Properties();
-			fs = new FileInputStream(System.getProperty("user.dir")+"//src//com//config//CONFIG.properties");
+			fs = new FileInputStream(System.getProperty("user.dir")+"\\resources\\CONFIG.properties");
 			CONFIG.load(fs);
 			
 			XL = new Properties();
-			fs = new FileInputStream(System.getProperty("user.dir")+"//src//com//config//XL.properties");
+			fs = new FileInputStream(System.getProperty("user.dir")+"\\resources\\XL.properties");
 			XL.load(fs);
 			}catch(Exception e){
 			e.printStackTrace();

@@ -28,7 +28,7 @@ public class CreateTestCasesFromTestSuite {
 			}
 					
 			for (int rowNum = 2; rowNum <= xl.getRowCount(CreatePropertiesObjects.XL.getProperty("TEST_SUITE_TESTCASE_SHEET_NAME")); rowNum++){
-				Logging.log(xl.getCellData(CreatePropertiesObjects.XL.getProperty("TEST_SUITE_TESTCASE_SHEET_NAME"), 0, rowNum));
+				Logging.log("The testcase name is " + xl.getCellData(CreatePropertiesObjects.XL.getProperty("TEST_SUITE_TESTCASE_SHEET_NAME"), 0, rowNum));
 				testCaseNames.add(xl.getCellData(CreatePropertiesObjects.XL.getProperty("TEST_SUITE_TESTCASE_SHEET_NAME"), 0, rowNum));
 				testSuiteFolder = new File(System.getProperty("user.dir")+"\\src\\com\\testcases\\"+currentTestSuite);
 				    if(!testSuiteFolder.exists()){
@@ -38,12 +38,12 @@ public class CreateTestCasesFromTestSuite {
 					
 				testCase = testSuiteFolder;
 				testCase = new File(System.getProperty("user.dir")+"\\src\\com\\testcases\\" + currentTestSuite +"\\" + testCaseNames.get(rowNum - 2) +".java");
-					if(!testCase.exists()){
+				if(!testCase.exists()){
 						testCase.createNewFile();
 						Logging.log("File has been created " + testCaseNames.get(rowNum - 2) );
-						createJavaTestCaseFiles(testCase, currentTestSuite, testCaseNames.get(rowNum - 2));
+						createJavaTestCaseFiles(testCase, currentTestSuite,xl, testCaseNames.get(rowNum - 2));
 						
-					}
+				}
 					
 			}
 		}catch(Exception e){
@@ -52,13 +52,15 @@ public class CreateTestCasesFromTestSuite {
 		return testCaseNames;
 	}
 
-	public static void createJavaTestCaseFiles(File newTestCase, String currentTSname, String testCaseName){
+	public static void createJavaTestCaseFiles(File newTestCase, String currentTSname, XLReader xls, String testCaseName){
 		StringBuilder sbimport = new StringBuilder();
 		StringBuilder sbclass = new StringBuilder();
+		StringBuilder sbclass2 = new StringBuilder();
+		
 			try{
 			PrintWriter print = new PrintWriter(newTestCase);
 			print.println("package com.testcases" + "."+ currentTSname +";");
-			BufferedReader br = new BufferedReader(new FileReader(System.getProperty("user.dir")+"\\src\\com\\config\\import.txt"));
+			BufferedReader br = new BufferedReader(new FileReader(System.getProperty("user.dir")+"\\resources\\templates\\import.template"));
 			 String line = br.readLine();
 	
 		        while (line != null) {
@@ -73,7 +75,7 @@ public class CreateTestCasesFromTestSuite {
 		        print.println("public String currentTestSuite = \"" + currentTSname +"\";");
 	
 		        
-		       br = new BufferedReader(new FileReader(System.getProperty("user.dir")+"\\src\\com\\config\\testclass.txt"));
+		       br = new BufferedReader(new FileReader(System.getProperty("user.dir")+"\\resources\\templates\\testclass1.template"));
 			   line = br.readLine();
 	
 	            while (line != null) {
@@ -83,12 +85,43 @@ public class CreateTestCasesFromTestSuite {
 		        }
 	        everything = sbclass.toString();
 	    	print.println(sbclass);
-			
-			print.flush();
+	    	print.println("public void do" +  testCaseName +"(Hashtable<String,String> data) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, InstantiationException, ClassNotFoundException, CustomException{");
+			for(int row = 2; row <= xls.getRowCount(CreatePropertiesObjects.XL.getProperty("TEST_SUITE_TESTCASE_SHEET_NAME")); row++){
+				if(xls.getCellData(CreatePropertiesObjects.XL.getProperty("TEST_SUITE_TESTCASE_SHEET_NAME"), 0, row).equals(testCaseName)){
+					if(xls.getCellData(CreatePropertiesObjects.XL.getProperty("TEST_SUITE_TESTCASE_SHEET_NAME"), 2, row).equalsIgnoreCase("Y")){
+						br = new BufferedReader(new FileReader(System.getProperty("user.dir")+"\\resources\\templates\\testclass2parallel.template"));
+						   line = br.readLine();
+				
+				            while (line != null) {
+				            	sbclass2.append(line);
+				            	sbclass2.append('\n');
+					            line = br.readLine();
+					        }
+				        everything = sbclass2.toString();
+				    	print.println(sbclass2);
+				    	
+						print.flush();
+					}else{
+						br = new BufferedReader(new FileReader(System.getProperty("user.dir")+"\\resources\\templates\\testclass2.template"));
+						   line = br.readLine();
+				
+				            while (line != null) {
+				            	sbclass2.append(line);
+				            	sbclass2.append('\n');
+					            line = br.readLine();
+					        }
+				        everything = sbclass2.toString();
+				    	print.println(sbclass2);
+				    	
+						print.flush();
+					}
+				}
+			}
+	    	 
 			
 			
 			}catch(Exception e){
-		Logging.log("Unable to locate text file import.txt or testclass.txt OR unable to locate the targeted .java file");
+		Logging.log("Unable to locate text file import.template or testclass.template OR unable to locate the targeted .java file");
 			}
 	}
 }

@@ -8,6 +8,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import com.createTestNG.CreateTestNGXML;
+import com.customexception.CustomException;
 import com.config.CreatePropertiesObjects;
 import com.generatexlsreport.CreateXLReport;
 import com.logs.Logging;
@@ -30,7 +31,9 @@ public String currentTestSuite = "AdminSuite";
 	}
 	
 	@Test(dataProvider="getData")
-	public void doLoginTest(Hashtable<String,String> data) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, InstantiationException, ClassNotFoundException{
+	
+
+public void doLoginTest(Hashtable<String,String> data) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, InstantiationException, ClassNotFoundException, CustomException{
 		if(!ReadingTestStepsWithRunmode.getRunModeOfTestCase(testName, CreateTestNGXML.currentTestSuiteXL.get(currentTestSuite))){
 			Logging.log(String.format("Skipping the Test Case - %s as RUNMODE in TestCases sheet in %s is N" , testName, currentTestSuite));
 			throw new SkipException("Skipping the Test Case as RUNMODE in TestCases sheet is N");

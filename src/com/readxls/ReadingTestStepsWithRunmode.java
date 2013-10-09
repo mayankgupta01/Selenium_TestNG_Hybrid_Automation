@@ -6,7 +6,9 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 
 import com.config.CreatePropertiesObjects;
+import com.customexception.CustomException;
 import com.generatexlsreport.CreateXLReport;
+import com.listeners.ErrorUtil;
 import com.logs.Logging;
 
 public class ReadingTestStepsWithRunmode {
@@ -31,7 +33,7 @@ public class ReadingTestStepsWithRunmode {
 		return false;		
 	}
 
-	public static void executeTestStepsSerially(String testName,String currentTestSuite, XLReader xls, Hashtable<String, String> data) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, InstantiationException, ClassNotFoundException{
+	public static void executeTestStepsSerially(String testName,String currentTestSuite, XLReader xls, Hashtable<String, String> data) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, InstantiationException, ClassNotFoundException, CustomException{
 		
 		
 		int sizeOfcurrentTestName;
@@ -119,12 +121,13 @@ public class ReadingTestStepsWithRunmode {
 
 			}
 	
-	public void executeKeywordsInTestCase(String testName, String currentTestSuite, XLReader xls, int startFromRow, int endAtRow ) throws InstantiationException, IllegalAccessException, ClassNotFoundException{
+	public void executeKeywordsInTestCase(String testName, String currentTestSuite, XLReader xls, int startFromRow, int endAtRow ) throws InstantiationException, IllegalAccessException, ClassNotFoundException, CustomException{
 		int rowNum;
 		String rowResult=null;
 		testResultSet = new ArrayList<String>();
 		
 		for(rowNum=startFromRow; rowNum <= endAtRow; rowNum++){
+
 			if(xls.getCellData(CreatePropertiesObjects.XL.getProperty("TEST_SUITE_TESTSTEPS_SHEET_NAME"), "TCID", rowNum).equals(testName)){
 				String KEYWORD = xls.getCellData(CreatePropertiesObjects.XL.getProperty("TEST_SUITE_TESTSTEPS_SHEET_NAME"), "KEYWORD", rowNum);
 				String OBJECT = xls.getCellData(CreatePropertiesObjects.XL.getProperty("TEST_SUITE_TESTSTEPS_SHEET_NAME"), "OBJECT", rowNum);
@@ -151,6 +154,14 @@ public class ReadingTestStepsWithRunmode {
 				}
 				lastTestStepRowExecuted = rowNum;
      		}
+		}
+		if(lastTestStepRowExecuted < startFromRow){
+			Logging.log("There are no test steps for the test case " + testName);
+			try{
+			throw new CustomException("There are no test steps for the test case " + testName);
+			}catch(Exception e){
+				ErrorUtil.addVerificationFailure(e);
+			}
 		}
 		CreateXLReport.insertResultSetInTestSteps(testName,currentTestSuite,testResultSet,xls,lastTestStepRowExecuted);
 		

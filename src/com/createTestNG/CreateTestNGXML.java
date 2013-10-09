@@ -11,9 +11,9 @@ import org.testng.xml.XmlTest;
 
 import com.config.CreatePropertiesObjects;
 import com.customexception.CustomException;
+import com.listeners.TestsListenerAdapter;
 import com.logs.Logging;
 import com.readxls.XLReader;
-import com.listeners.*;
 
 public class CreateTestNGXML {
 	public static ArrayList<XmlSuite> suitePassedTorunTestNGXMLForAllSuites = new ArrayList<XmlSuite>();
@@ -98,6 +98,7 @@ public class CreateTestNGXML {
 		else{
 		TestNG tng = new TestNG();
 		tng.addListener(new TestsListenerAdapter());
+		tng.setThreadCount(5);
 		tng.setXmlSuites(currentSuite);
 		tng.run();
 		}
