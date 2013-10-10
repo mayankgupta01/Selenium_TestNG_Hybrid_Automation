@@ -45,11 +45,11 @@ public class ReadingTestStepsWithRunmode {
 		
 		
 			// currentTestName.get(0).equals(testName) - this condition checks for iterations, after 1st iteration this condition will pass(first test case to be executed), for next test case both will fail
-			if(lastTestStepRowExecuted==0 || currentTestName.get(0).equals(testName)){
+			if(lastTestStepRowExecuted==0 || currentTestName.get(0).equals(testName)){ 
 				Logging.log(String.format("Execution starting from %s and ending at %s row number" , startTestCaseExecutionFromRow, testStepsSheetRowCount));
 				//deleting past result set if any before starting execution
 				//CreateXLReport.deletePastResultSet(lastTestStepRowExecuted, xls);
-				obj.executeKeywordsInTestCase(testName,currentTestSuite, xls, startTestCaseExecutionFromRow, testStepsSheetRowCount);
+				obj.executeKeywordsInTestCase(testName,currentTestSuite, xls, startTestCaseExecutionFromRow, testStepsSheetRowCount, data);
 				if(lastTestStepRowExecuted > 0){
 					currentTestName.add(testName);
 				}
@@ -62,66 +62,21 @@ public class ReadingTestStepsWithRunmode {
 					if(!currentTestName.get(sizeOfcurrentTestName - 1).equals(currentTestName.get(sizeOfcurrentTestName - 2))){
 						startTestCaseExecutionFromRow = lastTestStepRowExecuted+1;
 						Logging.log(String.format("Execution starting from %s and ending at %s row number" , startTestCaseExecutionFromRow, testStepsSheetRowCount));
-						obj.executeKeywordsInTestCase(testName,currentTestSuite, xls, startTestCaseExecutionFromRow, testStepsSheetRowCount);
-						/*for(rowNum=lastTestStepRowExecuted+1; rowNum <= xls.getRowCount(CreatePropertiesObjects.XL.getProperty("TEST_SUITE_TESTSTEPS_SHEET_NAME")); rowNum++){
-							if(xls.getCellData(CreatePropertiesObjects.XL.getProperty("TEST_SUITE_TESTSTEPS_SHEET_NAME"), "TCID", rowNum).equals(testName)){
-								String KEYWORD = xls.getCellData(CreatePropertiesObjects.XL.getProperty("TEST_SUITE_TESTSTEPS_SHEET_NAME"), "KEYWORD", rowNum);
-								String OBJECT = xls.getCellData(CreatePropertiesObjects.XL.getProperty("TEST_SUITE_TESTSTEPS_SHEET_NAME"), "OBJECT", rowNum);
-								String DATA = xls.getCellData(CreatePropertiesObjects.XL.getProperty("TEST_SUITE_TESTSTEPS_SHEET_NAME"), "DATA", rowNum);
-								
-								ReadingTestStepsWithRunmode.method = KEYWORD.getClass().getMethods();
-								for(int i=0;i < method.length; i++){
-									try{
-										if(method[i].getName().equals("do"+KEYWORD))
-											rowResult=(String)method[i].invoke(KEYWORD, OBJECT,DATA);
-											testResultSet.add(rowResult);
-									}catch(Exception e){
-										Logging.log("KEYWORD given in XL does not match with code");
-										e.printStackTrace();
-									}
-										
-								}
-								lastTestStepRowExecuted = rowNum;
-			         		}
-							
-						}*/
+						obj.executeKeywordsInTestCase(testName,currentTestSuite, xls, startTestCaseExecutionFromRow, testStepsSheetRowCount, data);
+						
 						
 					}
 					else{
 						Logging.log(String.format("Execution starting from %s and ending at %s row number" , startTestCaseExecutionFromRow, lastTestStepRowExecuted));
-						obj.executeKeywordsInTestCase(testName,currentTestSuite, xls, startTestCaseExecutionFromRow, lastTestStepRowExecuted);
-						
-						/*for(rowNum= startTestCaseExecutionFromRow; rowNum <= lastTestStepRowExecuted; rowNum++){
-							if(xls.getCellData(CreatePropertiesObjects.XL.getProperty("TEST_SUITE_TESTSTEPS_SHEET_NAME"), "TCID", rowNum).equals(testName)){
-								String KEYWORD = xls.getCellData(CreatePropertiesObjects.XL.getProperty("TEST_SUITE_TESTSTEPS_SHEET_NAME"), "KEYWORD", rowNum);
-								String OBJECT = xls.getCellData(CreatePropertiesObjects.XL.getProperty("TEST_SUITE_TESTSTEPS_SHEET_NAME"), "OBJECT", rowNum);
-								String DATA = xls.getCellData(CreatePropertiesObjects.XL.getProperty("TEST_SUITE_TESTSTEPS_SHEET_NAME"), "DATA", rowNum);
-								
-								ReadingTestStepsWithRunmode.method = KEYWORD.getClass().getMethods();
-								for(int i=0;i < method.length; i++){
-									try{
-										if(method[i].getName().equals("do"+KEYWORD))
-											rowResult=(String)method[i].invoke(KEYWORD, OBJECT,DATA);
-											testResultSet.add(rowResult);
-									}catch(Exception e){
-										Logging.log(String.format("%s in XL does not match with code for object %s and data %s", KEYWORD, OBJECT, DATA));
-										Logging.log(e.getMessage());
-									}
-										
-								}
-								lastTestStepRowExecuted = rowNum;
-			         		}
-							CreateXLReport.insertResultSetInTestSteps(testName,testResultSet,xls,lastTestStepRowExecuted);
-						}*/
-						
-					}
+						obj.executeKeywordsInTestCase(testName,currentTestSuite, xls, startTestCaseExecutionFromRow, lastTestStepRowExecuted, data);
+     				}
 
-			}
+			   }
 
 
 			}
 	
-	public void executeKeywordsInTestCase(String testName, String currentTestSuite, XLReader xls, int startFromRow, int endAtRow ) throws InstantiationException, IllegalAccessException, ClassNotFoundException, CustomException{
+	public void executeKeywordsInTestCase(String testName, String currentTestSuite, XLReader xls, int startFromRow, int endAtRow, Hashtable<String, String> data ) throws InstantiationException, IllegalAccessException, ClassNotFoundException, CustomException{
 		int rowNum;
 		String rowResult=null;
 		testResultSet = new ArrayList<String>();
@@ -132,36 +87,68 @@ public class ReadingTestStepsWithRunmode {
 				String KEYWORD = xls.getCellData(CreatePropertiesObjects.XL.getProperty("TEST_SUITE_TESTSTEPS_SHEET_NAME"), "KEYWORD", rowNum);
 				String OBJECT = xls.getCellData(CreatePropertiesObjects.XL.getProperty("TEST_SUITE_TESTSTEPS_SHEET_NAME"), "OBJECT", rowNum);
 				String DATA = xls.getCellData(CreatePropertiesObjects.XL.getProperty("TEST_SUITE_TESTSTEPS_SHEET_NAME"), "DATA", rowNum);
+				System.out.println("THe value in data sheet ----->" + data.get(DATA));
+					if(data.get(DATA) != null){
+						DATA = data.get(DATA);
+					}
 				
 				Object keyword = Class.forName("com.keywords." + KEYWORD).newInstance();
 				ReadingTestStepsWithRunmode.method = keyword.getClass().getDeclaredMethods();
 				
 				// TO CHECK THAT RIGHT CLASS METHODS ARE COMING
-				for( int j = 0; j< method.length; j++)
-					System.out.println(method[j]);
+				/*for( int j = 0; j< method.length; j++)
+					System.out.println(method[j]);*/
 				/*System.out.println(KEYWORD.getClass().getMethods());
 				System.out.println(method.length);*/
-				for(int i=0;i < method.length; i++){
-					try{
-						if(method[i].getName().equals("do"+KEYWORD))
-							rowResult=(String)method[i].invoke(keyword,OBJECT,DATA);
-							testResultSet.add(rowResult);
-					}catch(Exception e){
-						Logging.log(String.format("%s in XL does not match with code for object %s and data %s", KEYWORD, OBJECT, DATA));
-						e.printStackTrace();
+				if(!data.get(CreatePropertiesObjects.XL.getProperty("TEST_SUITE_DATA_COLUMN_POSITIVE_SCENARIO")).equalsIgnoreCase(CreatePropertiesObjects.XL.getProperty("RUNMODE_NOVALUE"))){
+					for(int i=0;i < method.length; i++){
+						try{
+							if(method[i].getName().equals("do"+KEYWORD))
+								rowResult=(String)method[i].invoke(keyword,OBJECT,DATA);
+								testResultSet.add(rowResult);
+						}catch(Exception e){
+							Logging.log(String.format("%s in XL does not match with code for object %s and data %s", KEYWORD, OBJECT, DATA));
+							e.printStackTrace();
+						    }
+						if(rowResult.contains(CreatePropertiesObjects.CONFIG.getProperty("DISCONTINUE_ON_FAIL"))){
+							lastTestStepRowExecuted = rowNum;
+							currentTestName.add(testName);
+							CreateXLReport.insertResultSetInTestSteps(testName,currentTestSuite,testResultSet,xls,lastTestStepRowExecuted);
+							//ErrorUtil.addVerificationFailure(new CustomException((String.format("Skipping the rest of teststeps as execution FAILED on %s for keyword %s" , lastTestStepRowExecuted, KEYWORD))));
+							throw new CustomException(String.format("Skipping the rest of teststeps as execution FAILED on row number -  %s for keyword - %s" , lastTestStepRowExecuted, KEYWORD));
+						}	
 					}
-						
+					lastTestStepRowExecuted = rowNum;
 				}
-				lastTestStepRowExecuted = rowNum;
+				
+				else{
+					for(int i=0;i < method.length; i++){
+						try{
+							if(method[i].getName().equals("do"+KEYWORD))
+								rowResult=(String)method[i].invoke(keyword,OBJECT,DATA,data.get(CreatePropertiesObjects.XL.getProperty("TEST_SUITE_DATA_COLUMN_POSITIVE_SCENARIO")));
+								testResultSet.add(rowResult);
+						}catch(Exception e){
+							Logging.log(String.format("%s in XL does not match with code for object %s and data %s", KEYWORD, OBJECT, DATA));
+							e.printStackTrace();
+						    }
+						if(rowResult.contains(CreatePropertiesObjects.CONFIG.getProperty("DISCONTINUE_ON_FAIL"))){
+							lastTestStepRowExecuted = rowNum;
+							currentTestName.add(testName);
+							CreateXLReport.insertResultSetInTestSteps(testName,currentTestSuite,testResultSet,xls,lastTestStepRowExecuted);
+							//ErrorUtil.addVerificationFailure(new CustomException((String.format("Skipping the rest of teststeps as execution FAILED on %s for keyword %s" , lastTestStepRowExecuted, KEYWORD))));
+							throw new CustomException(String.format("Skipping the rest of teststeps as execution FAILED on row number -  %s for keyword - %s" , lastTestStepRowExecuted, KEYWORD));
+						}	
+					}
+					lastTestStepRowExecuted = rowNum;
+				}
+
      		}
 		}
 		if(lastTestStepRowExecuted < startFromRow){
 			Logging.log("There are no test steps for the test case " + testName);
-			try{
+			ErrorUtil.addVerificationFailure(new CustomException("There are no test steps for the test case " + testName));
 			throw new CustomException("There are no test steps for the test case " + testName);
-			}catch(Exception e){
-				ErrorUtil.addVerificationFailure(e);
-			}
+		
 		}
 		CreateXLReport.insertResultSetInTestSteps(testName,currentTestSuite,testResultSet,xls,lastTestStepRowExecuted);
 		

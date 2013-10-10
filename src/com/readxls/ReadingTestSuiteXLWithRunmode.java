@@ -26,12 +26,12 @@ public class ReadingTestSuiteXLWithRunmode {
 		XLReader testSuiteWithRunModeY;
 		CreatePropertiesObjects.getPropertiesObjectInstance();
 						
-		Logging.log(System.getProperty("user.dir")+"\\src\\com\\xlfiles\\"+ CreatePropertiesObjects.XL.getProperty("MASTER_TEST_SUITE"));
+		Logging.log(CreatePropertiesObjects.XL.getProperty("EXCEL_FILE_PATH")+ CreatePropertiesObjects.XL.getProperty("MASTER_TEST_SUITE"));
 			try{
-					masterTestSuiteXL = new XLReader(System.getProperty("user.dir")+"\\src\\com\\xlfiles\\"+ CreatePropertiesObjects.XL.getProperty("MASTER_TEST_SUITE"));
+					masterTestSuiteXL = new XLReader(CreatePropertiesObjects.XL.getProperty("EXCEL_FILE_PATH")+ CreatePropertiesObjects.XL.getProperty("MASTER_TEST_SUITE"));
 					
 				}catch(Exception e){
-					throw new CustomException("The file " + CreatePropertiesObjects.XL.getProperty("MASTER_TEST_SUITE") + "cannot be found int the mentioned path -" +System.getProperty("user.dir")+"\\src\\com\\xlfiles\\");
+					throw new CustomException("The file " + CreatePropertiesObjects.XL.getProperty("MASTER_TEST_SUITE") + "cannot be found int the mentioned path -" +CreatePropertiesObjects.XL.getProperty("EXCEL_FILE_PATH"));
 				}
 				int rowCount = masterTestSuiteXL.getRowCount(CreatePropertiesObjects.XL.getProperty("MASTER_TEST_SUITE_SHEET_NAME"));
 				
@@ -40,9 +40,9 @@ public class ReadingTestSuiteXLWithRunmode {
 						
 						currentTestSuite = (String)masterTestSuiteXL.getCellData(CreatePropertiesObjects.XL.getProperty("MASTER_TEST_SUITE_SHEET_NAME"), CreatePropertiesObjects.XL.getProperty("MASTER_TEST_SUITE_1ST_COLUMN"), rowNum);
 						if(masterTestSuiteXL.getCellData(CreatePropertiesObjects.XL.getProperty("MASTER_TEST_SUITE_SHEET_NAME"), CreatePropertiesObjects.XL.getProperty("MASTER_TEST_SUITE_RUNMODE_COLUMN"), rowNum).equalsIgnoreCase(CreatePropertiesObjects.XL.getProperty("RUNMODE_YESVALUE"))){
-							testSuiteWithRunModeY = new XLReader(System.getProperty("user.dir")+"\\src\\com\\xlfiles\\"+currentTestSuite+".xlsx");
+							testSuiteWithRunModeY = new XLReader(CreatePropertiesObjects.XL.getProperty("EXCEL_FILE_PATH")+currentTestSuite+".xlsx");
 							Logging.log("The current TestSuite with Runmode Y is " + currentTestSuite);
-							Logging.log("The path to the current testsuite xl file is "+ System.getProperty("user.dir")+"\\src\\com\\xlfiles\\"+currentTestSuite+".xlsx");
+							Logging.log("The path to the current testsuite xl file is "+ CreatePropertiesObjects.XL.getProperty("EXCEL_FILE_PATH")+currentTestSuite+".xlsx");
 							currentTestSuiteXL.put(currentTestSuite, testSuiteWithRunModeY);
 							testCasesWithinTestSuite = CreateTestCasesFromTestSuite.CreateTestCases(currentTestSuite);
 							if(testCasesWithinTestSuite.size() == 0){
@@ -51,7 +51,7 @@ public class ReadingTestSuiteXLWithRunmode {
 							}
 							
 							//Logging.log(currentTestSuite);
-							//suitePassedTorunTestNGXMLForAllSuites.add(CreateTestNGXML.createTestNGXMLForCurrentSuite(currentTestSuite, testCasesWithinTestSuite)); 
+							//suitePassedTorunTestNGXMLForAllSuites.add(BootStrapCreateTestNGXML.createTestNGXMLForCurrentSuite(currentTestSuite, testCasesWithinTestSuite)); 
 				        }
 					}
 				}

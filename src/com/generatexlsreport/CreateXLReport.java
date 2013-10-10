@@ -3,8 +3,11 @@ package com.generatexlsreport;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Hashtable;
 
 import com.config.CreatePropertiesObjects;
+import com.customexception.CustomException;
+import com.listeners.ErrorUtil;
 import com.logs.Logging;
 import com.readxls.ExcelWriter;
 import com.readxls.XLReader;
@@ -12,7 +15,7 @@ import com.readxls.XLReader;
 public class CreateXLReport {
 	
 	public static int testCaseDataSetNumber=0;
-	public static int newResultSheetCreated = 0;
+	public static Hashtable<String, Integer> newResultSheetCreatedforTestSuite = new Hashtable<String, Integer>();
 	public static Date date = null;
 	public static  SimpleDateFormat sdf = null;;
 	public static  String formattedDate =null;;
@@ -21,7 +24,7 @@ public class CreateXLReport {
 	public static void insertResultSetInTestSteps(String testName,String currentTestSuite, ArrayList<String> resultSet,XLReader xl, int lastRowExecuted){
 		try{
 			int resultSetIndex = resultSet.size();
-			ExcelWriter ex = new ExcelWriter(System.getProperty("user.dir")+"\\src\\com\\xlfiles\\"+currentTestSuite+".xlsx");
+			ExcelWriter ex = new ExcelWriter(CreatePropertiesObjects.XL.getProperty("EXCEL_FILE_PATH")+currentTestSuite+".xlsx");
 			
 			if(date==null){
 				date = new Date();
@@ -30,11 +33,15 @@ public class CreateXLReport {
 			}
 
 			if(resultSetIndex > 0){
-				if(newResultSheetCreated==0){
+				if(newResultSheetCreatedforTestSuite.get(currentTestSuite) == null){
+					newResultSheetCreatedforTestSuite.put(currentTestSuite, 0);
+				}
+				
+				if(newResultSheetCreatedforTestSuite.get(currentTestSuite)==0){
 					//System.out.println(formattedDate); // 12/01/2011 4:48:16 PM
 					ex.addSheet("RESULT-" + formattedDate);
 					Logging.log(String.format("New Result Sheet created in the %s excel with the name RESULT-%s",currentTestSuite,formattedDate));
-					newResultSheetCreated = newResultSheetCreated+1;
+					newResultSheetCreatedforTestSuite.put(currentTestSuite, 1);
 				}
 				
 				// 5 columns are supposed to be present in teststeps sheet after this result columns will follow
@@ -76,9 +83,16 @@ public class CreateXLReport {
 					for(int rowNum=lastRowExecuted;rowNum >1; rowNum--){
 						if(xl.getCellData(CreatePropertiesObjects.XL.getProperty("TEST_SUITE_TESTSTEPS_SHEET_NAME"), "TCID", rowNum).equals(testName) && resultSetIndex >= 0 ){
 							Logging.log("Result set has " + resultSetIndex + "elements");
-							ex.setCellDataColNo("RESULT-" + formattedDate, 3+testCaseDataSetNumber, rowNum, resultSet.get(resultSetIndex - 1));
+							try{
+								ex.setCellDataColNo("RESULT-" + formattedDate, 3+testCaseDataSetNumber, rowNum, resultSet.get(resultSetIndex - 1));
+								Logging.log("Setting cell data in RESULT" + testCaseDataSetNumber + ",row num = " + rowNum + " value being inserted is" + resultSet.get(resultSetIndex - 1) );
+							}catch(Exception e){
+								ErrorUtil.addVerificationFailure(e);
+								throw new CustomException("Result set size is 0, there is an uncaught exception in the keyword executed");
+							}
+							
 							//ex.setCellData("RESULT-" + formattedDate, "RESULT"+testCaseDataSetNumber, rowNum, resultSet.get(resultSetIndex - 1));
-							Logging.log("Setting cell data in RESULT" + testCaseDataSetNumber + ",row num = " + rowNum + " value being inserted is" + resultSet.get(resultSetIndex - 1) );
+							
 							resultSetIndex--;
 						}
 							
@@ -97,7 +111,7 @@ public class CreateXLReport {
 
 	public static void insertResultSetInTestStepsAsSkipped(String testName,String currentTestSuite,  XLReader xl){
 		try{
-			ExcelWriter ex = new ExcelWriter(System.getProperty("user.dir")+"\\src\\com\\xlfiles\\"+currentTestSuite+".xlsx");
+			ExcelWriter ex = new ExcelWriter(CreatePropertiesObjects.XL.getProperty("EXCEL_FILE_PATH")+currentTestSuite+".xlsx");
 			
 			if(date==null){
 				date = new Date();
