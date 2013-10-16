@@ -31,8 +31,9 @@ public class ReadingTestSuiteXLWithRunmode {
 					masterTestSuiteXL = new XLReader(CreatePropertiesObjects.XL.getProperty("EXCEL_FILE_PATH")+ CreatePropertiesObjects.XL.getProperty("MASTER_TEST_SUITE"));
 					
 				}catch(Exception e){
-					throw new CustomException("The file " + CreatePropertiesObjects.XL.getProperty("MASTER_TEST_SUITE") + "cannot be found int the mentioned path -" +CreatePropertiesObjects.XL.getProperty("EXCEL_FILE_PATH"));
-				}
+					Logging.log("The file " + CreatePropertiesObjects.XL.getProperty("MASTER_TEST_SUITE") + "cannot be found in the mentioned path -" +CreatePropertiesObjects.XL.getProperty("EXCEL_FILE_PATH"));
+					throw new CustomException("The file " + CreatePropertiesObjects.XL.getProperty("MASTER_TEST_SUITE") + "cannot be found in the mentioned path -" +CreatePropertiesObjects.XL.getProperty("EXCEL_FILE_PATH"));
+					}
 				int rowCount = masterTestSuiteXL.getRowCount(CreatePropertiesObjects.XL.getProperty("MASTER_TEST_SUITE_SHEET_NAME"));
 				
 				if(rowCount > 0){
@@ -40,7 +41,13 @@ public class ReadingTestSuiteXLWithRunmode {
 						
 						currentTestSuite = (String)masterTestSuiteXL.getCellData(CreatePropertiesObjects.XL.getProperty("MASTER_TEST_SUITE_SHEET_NAME"), CreatePropertiesObjects.XL.getProperty("MASTER_TEST_SUITE_1ST_COLUMN"), rowNum);
 						if(masterTestSuiteXL.getCellData(CreatePropertiesObjects.XL.getProperty("MASTER_TEST_SUITE_SHEET_NAME"), CreatePropertiesObjects.XL.getProperty("MASTER_TEST_SUITE_RUNMODE_COLUMN"), rowNum).equalsIgnoreCase(CreatePropertiesObjects.XL.getProperty("RUNMODE_YESVALUE"))){
-							testSuiteWithRunModeY = new XLReader(CreatePropertiesObjects.XL.getProperty("EXCEL_FILE_PATH")+currentTestSuite+".xlsx");
+							try{
+								testSuiteWithRunModeY = new XLReader(CreatePropertiesObjects.XL.getProperty("EXCEL_FILE_PATH")+currentTestSuite+".xlsx");
+							}catch(Exception e){
+								Logging.log("The file " + CreatePropertiesObjects.XL.getProperty("MASTER_TEST_SUITE") + "cannot be found in the mentioned path -" +CreatePropertiesObjects.XL.getProperty("EXCEL_FILE_PATH"));
+								throw new CustomException("The file " + currentTestSuite+".xlsx" + "cannot be found in the mentioned path -" +CreatePropertiesObjects.XL.getProperty("EXCEL_FILE_PATH"));
+							}
+							
 							Logging.log("The current TestSuite with Runmode Y is " + currentTestSuite);
 							Logging.log("The path to the current testsuite xl file is "+ CreatePropertiesObjects.XL.getProperty("EXCEL_FILE_PATH")+currentTestSuite+".xlsx");
 							currentTestSuiteXL.put(currentTestSuite, testSuiteWithRunModeY);

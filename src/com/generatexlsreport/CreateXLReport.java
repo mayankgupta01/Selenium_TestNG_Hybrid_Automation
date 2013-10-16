@@ -36,13 +36,19 @@ public class CreateXLReport {
 				if(newResultSheetCreatedforTestSuite.get(currentTestSuite) == null){
 					newResultSheetCreatedforTestSuite.put(currentTestSuite, 0);
 				}
+		try{
+			if(newResultSheetCreatedforTestSuite.get(currentTestSuite)==0){
+				//System.out.println(formattedDate); // 12/01/2011 4:48:16 PM
+				ex.addSheet("RESULT-" + formattedDate);
+				Logging.log(String.format("New Result Sheet created in the %s excel with the name RESULT-%s",currentTestSuite,formattedDate));
+				newResultSheetCreatedforTestSuite.put(currentTestSuite, 1);
+			}
+		}catch(Exception e){
+			ErrorUtil.addVerificationFailure(e);
+			Logging.log("The excel file " +currentTestSuite+".xlsx "+ "maybe open, please close the excel file and re-run the test");
+			throw new CustomException("The excel file " +currentTestSuite+".xlsx "+ "maybe open, please close the excel file and re-run the test");
+		}
 				
-				if(newResultSheetCreatedforTestSuite.get(currentTestSuite)==0){
-					//System.out.println(formattedDate); // 12/01/2011 4:48:16 PM
-					ex.addSheet("RESULT-" + formattedDate);
-					Logging.log(String.format("New Result Sheet created in the %s excel with the name RESULT-%s",currentTestSuite,formattedDate));
-					newResultSheetCreatedforTestSuite.put(currentTestSuite, 1);
-				}
 				
 				// 5 columns are supposed to be present in teststeps sheet after this result columns will follow
 				//System.out.println(xl.getCellData(CreatePropertiesObjects.XL.getProperty("TEST_SUITE_TESTSTEPS_SHEET_NAME"), 5+testCaseDataSetNumber, 1));
@@ -53,19 +59,26 @@ public class CreateXLReport {
 					String DATA = xl.getCellData(CreatePropertiesObjects.XL.getProperty("TEST_SUITE_TESTSTEPS_SHEET_NAME"), 4, rowNum);
 					Logging.log("The result sheet name is RESULT-" +formattedDate);
 					if(ex.isSheetExist("RESULT-" + formattedDate)){
-						Logging.log("The Result sheet exists - going inside the if condition Line 39 CreateXLReport");
-						ex.setCellDataColNo("RESULT-" + formattedDate, 0, rowNum, TCID);
-						Logging.log(String.format("Inserting TCID value in resultsheet value = %s", TCID));
+						try{
+							Logging.log("The Result sheet exists - going inside the if condition Line 39 CreateXLReport");
+							ex.setCellDataColNo("RESULT-" + formattedDate, 0, rowNum, TCID);
+							Logging.log(String.format("Inserting TCID value in resultsheet value = %s", TCID));
+							
+							ex.setCellDataColNo("RESULT-" + formattedDate, 1, rowNum, KEYWORD);
+							Logging.log(String.format("Inserting KEYWORD value in resultsheet value = %s", KEYWORD));
+							
+							ex.setCellDataColNo("RESULT-" + formattedDate, 2, rowNum, OBJECT);
+							Logging.log(String.format("Inserting OBJECT value in resultsheet value = %s", OBJECT));
+							
+							ex.setCellDataColNo("RESULT-" + formattedDate, 3, rowNum, DATA);
+							Logging.log(String.format("Inserting DATA value in resultsheet value = %s", DATA));
+							resultSheetLastPopulatedRow = rowNum;
+						}catch(Exception e){
+							ErrorUtil.addVerificationFailure(e);
+							Logging.log("The excel file " +currentTestSuite+".xlsx "+ "maybe open, please close the excel file and re-run the test");
+							throw new CustomException("The excel file " +currentTestSuite+".xlsx "+ "maybe open, please close the excel file and re-run the test");
+						}
 						
-						ex.setCellDataColNo("RESULT-" + formattedDate, 1, rowNum, KEYWORD);
-						Logging.log(String.format("Inserting KEYWORD value in resultsheet value = %s", KEYWORD));
-						
-						ex.setCellDataColNo("RESULT-" + formattedDate, 2, rowNum, OBJECT);
-						Logging.log(String.format("Inserting OBJECT value in resultsheet value = %s", OBJECT));
-						
-						ex.setCellDataColNo("RESULT-" + formattedDate, 3, rowNum, DATA);
-						Logging.log(String.format("Inserting DATA value in resultsheet value = %s", DATA));
-						resultSheetLastPopulatedRow = rowNum;
 					}
 					
 				}
@@ -88,7 +101,9 @@ public class CreateXLReport {
 								Logging.log("Setting cell data in RESULT" + testCaseDataSetNumber + ",row num = " + rowNum + " value being inserted is" + resultSet.get(resultSetIndex - 1) );
 							}catch(Exception e){
 								ErrorUtil.addVerificationFailure(e);
-								throw new CustomException("Result set size is 0, there is an uncaught exception in the keyword executed");
+								Logging.log("The excel file " +currentTestSuite+".xlsx "+ "maybe open, please close the excel file and re-run the test");
+								throw new CustomException("The excel file " +currentTestSuite+".xlsx "+ "maybe open, please close the excel file and re-run the test");
+								//throw new CustomException("Result set size is 0, there is an uncaught exception in the keyword executed");
 							}
 							
 							//ex.setCellData("RESULT-" + formattedDate, "RESULT"+testCaseDataSetNumber, rowNum, resultSet.get(resultSetIndex - 1));
@@ -109,8 +124,8 @@ public class CreateXLReport {
 		
 	}
 
-	public static void insertResultSetInTestStepsAsSkipped(String testName,String currentTestSuite,  XLReader xl){
-		try{
+	public static void insertResultSetInTestStepsAsSkipped(String testName,String currentTestSuite,  XLReader xl) throws CustomException{
+		
 			ExcelWriter ex = new ExcelWriter(CreatePropertiesObjects.XL.getProperty("EXCEL_FILE_PATH")+currentTestSuite+".xlsx");
 			
 			if(date==null){
@@ -127,20 +142,27 @@ public class CreateXLReport {
 					String DATA = xl.getCellData(CreatePropertiesObjects.XL.getProperty("TEST_SUITE_TESTSTEPS_SHEET_NAME"), 4, rowNum);
 					Logging.log("The result sheet name is RESULT-" +formattedDate);
 					if(ex.isSheetExist("RESULT-" + formattedDate)){
-						Logging.log("The Result sheet exists - going inside the if condition Line 39 CreateXLReport");
-						ex.setCellDataColNo("RESULT-" + formattedDate, 0, rowNum, TCID);
-						Logging.log(String.format("Inserting TCID value in resultsheet value = %s", TCID));
-						
-						ex.setCellDataColNo("RESULT-" + formattedDate, 1, rowNum, KEYWORD);
-						Logging.log(String.format("Inserting KEYWORD value in resultsheet value = %s", KEYWORD));
-						
-						ex.setCellDataColNo("RESULT-" + formattedDate, 2, rowNum, OBJECT);
-						Logging.log(String.format("Inserting OBJECT value in resultsheet value = %s", OBJECT));
-						
-						ex.setCellDataColNo("RESULT-" + formattedDate, 3, rowNum, DATA);
-						Logging.log(String.format("Inserting DATA value in resultsheet value = %s", DATA));
-						resultSheetLastPopulatedRow = rowNum;
-					}
+						try{
+							Logging.log("The Result sheet exists - going inside the if condition Line 39 CreateXLReport");
+							ex.setCellDataColNo("RESULT-" + formattedDate, 0, rowNum, TCID);
+							Logging.log(String.format("Inserting TCID value in resultsheet value = %s", TCID));
+							
+							ex.setCellDataColNo("RESULT-" + formattedDate, 1, rowNum, KEYWORD);
+							Logging.log(String.format("Inserting KEYWORD value in resultsheet value = %s", KEYWORD));
+							
+							ex.setCellDataColNo("RESULT-" + formattedDate, 2, rowNum, OBJECT);
+							Logging.log(String.format("Inserting OBJECT value in resultsheet value = %s", OBJECT));
+							
+							ex.setCellDataColNo("RESULT-" + formattedDate, 3, rowNum, DATA);
+							Logging.log(String.format("Inserting DATA value in resultsheet value = %s", DATA));
+							resultSheetLastPopulatedRow = rowNum;
+					
+						}catch(Exception e){
+							ErrorUtil.addVerificationFailure(e);
+							Logging.log("The excel file " +currentTestSuite+".xlsx "+ "maybe open, please close the excel file and re-run the test");
+							throw new CustomException("The excel file " +currentTestSuite+".xlsx "+ "maybe open, please close the excel file and re-run the test");
+						}
+							}
 				}
 			}
 			
@@ -159,10 +181,7 @@ public class CreateXLReport {
 				if(ex.getCellData("RESULT-" + formattedDate, "TCID", rowNum).equals(testName))
 					ex.setCellDataColNo("RESULT-" + formattedDate, 3+testCaseDataSetNumber, rowNum, "SKIPPED");
 			}
-		}catch(Exception e){
-			Logging.log("Error occured while inserting result in TestSteps sheet for TestCase = " + testName);
-			e.printStackTrace();
-		}
+		
 				
 	}
 	

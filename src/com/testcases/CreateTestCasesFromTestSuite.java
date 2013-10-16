@@ -23,8 +23,8 @@ public class CreateTestCasesFromTestSuite {
 		int rowCount = xl.getRowCount(CreatePropertiesObjects.XL.getProperty("TEST_SUITE_TESTCASE_SHEET_NAME"));
 		try{
 			if(rowCount == 0){
-				Logging.log("Cannot proceed as there are no testcases in the test suite");
-				return null;
+				Logging.log("CANNOT PROCEED TO CREATE TESTCASES AS THERE ARE NO TESTCASES IN THIS TEST SUITE - " + currentTestSuite);
+				return new ArrayList<String>();
 			}
 					
 			for (int rowNum = 2; rowNum <= xl.getRowCount(CreatePropertiesObjects.XL.getProperty("TEST_SUITE_TESTCASE_SHEET_NAME")); rowNum++){
