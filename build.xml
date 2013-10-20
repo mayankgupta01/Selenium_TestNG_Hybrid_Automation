@@ -8,7 +8,7 @@
     <property environment="env"/>
     
      <property name="ws.home" value="${basedir}"/>
-	<property name="ws.jars" value="F:\Installed Software\TestNGHybridProjectJars"/>
+	<property name="ws.jars" value="F:\Installed Software\TestNGHybridJars_Selenium2_35"/>
     <property name="test.dest" value="${ws.home}\build"/>
     <property name="test.src" value="${ws.home}\src"/>
 	<property name="ng.result" value="test-output"/>
@@ -56,7 +56,7 @@
 		</delete>
         <echo message="making directory..."/>
 		<mkdir dir="${test.dest}"/>
-        <echo message="classpath------: ${test.classpath}"/>
+       <!--  <echo message="classpath: ${test.classpath}"/> --> 
         <echo message="compiling..."/>
         <javac 
             debug="true" 
@@ -66,9 +66,10 @@
             classpath="${test.classpath}"
         >
             <classpath>
-            <pathelement location="${basedir}/log4j.properties" />
+            <pathelement location="${basedir}\log4j.properties" />
             </classpath>
         </javac>
+        <copy file="${basedir}/src/log4j.properties" todir="${test.dest}"/>
       </target>
 
     <!-- build -->
@@ -77,8 +78,8 @@
 
     <!-- run -->
     <target name="run" depends="compile">
-        <echo message="run classpath location ----:${test.dest}" />
-<!--         <jar destfile="ReadingTestSuiteXLWithRunmode.jar"
+ <!--       <echo message="run classpath location:${test.dest}" />
+         <jar destfile="ReadingTestSuiteXLWithRunmode.jar"
              basedir="${test.dest}"
              includes="**/*.class"
              /> -->
@@ -88,16 +89,16 @@
             <!--     <fileset dir="${ws.jars}">
             		<include name="*.jar"/>
         		</fileset> -->
-                <pathelement location="${ws.jars}/dom4j-1.1.jar" />
-                <pathelement location="${ws.jars}/poi-3.6-20091214.jar" />
-                <pathelement location="${ws.jars}/poi-ooxml-3.6-20091214.jar" />
-                <pathelement location="${ws.jars}/poi-ooxml-schemas-3.6-20091214.jar" />
-                <pathelement location="${ws.jars}/xmlbeans-2.3.0.jar" />
-                <pathelement location="${ws.jars}/testng.jar" />
-                <pathelement location="${ws.jars}/commons-exec-1.1.jar" />
-                <pathelement location="${ws.jars}/log4j-1.2.14.jar" />
-                <pathelement location="${ws.jars}/logging-selenium-1.2.jar" />
-				<pathelement location="${basedir}/log4j.properties" />
+                <pathelement location="${ws.jars}\dom4j-1.1.jar" />
+                <pathelement location="${ws.jars}\poi-3.6-20091214.jar" />
+                <pathelement location="${ws.jars}\poi-ooxml-3.6-20091214.jar" />
+                <pathelement location="${ws.jars}\poi-ooxml-schemas-3.6-20091214.jar" />
+                <pathelement location="${ws.jars}\xmlbeans-2.3.0.jar" />
+                <pathelement location="${ws.jars}\testng.jar" />
+                <pathelement location="${ws.jars}\commons-exec-1.1.jar" />
+                <pathelement location="${ws.jars}\log4j-1.2.14.jar" />
+                <pathelement location="${ws.jars}\logging-selenium-1.2.jar" />
+				<pathelement location="${basedir}\log4j.properties" />
                 
             </classpath>
             </java>
@@ -117,18 +118,26 @@
     </target>
 
     <target name="runTestNG" depends="compile">
-        <echo message="run classpath location ----:${test.dest}" />
-<!--         <jar destfile="ReadingTestSuiteXLWithRunmode.jar"
+  <!--      <echo message="run classpath location:${test.dest}" />
+         <jar destfile="ReadingTestSuiteXLWithRunmode.jar"
              basedir="${test.dest}"
              includes="**/*.class"
              /> -->
+        
         <java classname="com.createTestNG.BootStrapCreateTestNGXML" fork="true">
+            
             <classpath>
-               
-                  <pathelement location="${test.dest}" />
-                  <fileset dir="${ws.jars}">
+                 <pathelement location="${test.dest}" />
+                 <!--   <pathelement location="${basedir}\log4j.properties" />
+                <pathelement location="${ws.jars}\log4j-1.2.14.jar" />
+                <pathelement location="${ws.jars}\logging-selenium-1.2.jar" /> -->
+                   <fileset dir="${ws.jars}">
             		<include name="*.jar"/>
-        		</fileset>
+            	   </fileset>
+        			<fileset dir="${ws.home}">
+        			    <include name="*.properties"/>
+        			</fileset>
+                   
                <!--  <pathelement location="${ws.jars}/dom4j-1.1.jar" />
                 <pathelement location="${ws.jars}/poi-3.6-20091214.jar" />
                 <pathelement location="${ws.jars}/poi-ooxml-3.6-20091214.jar" />
@@ -162,7 +171,7 @@
 	        <fileset dir="${ws.jars}" includes="*.jar"/>
 	</path>
 	
-	  <target name="makexsltreports" depends="run, runTestNG">
+	  <target name="makexsltreports"  > <!--  depends="run, runTestNG"> --> 
 	        <mkdir dir="C:\Users\Mayank\Desktop\XSLT_Reports\output"/>
 
 	        <xslt in="${basedir}\${ng.result}\testng-results.xml" style="${basedir}\src\xslt\testng-results.xsl"

@@ -13,8 +13,10 @@ import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.RichTextString;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFComment;
 import org.apache.poi.xssf.usermodel.XSSFCreationHelper;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFHyperlink;
@@ -56,7 +58,7 @@ public class ExcelWriter {
 		}
 	}
 	
-	public String getCellData(String sheetName,String colName,int rowNum){
+	public synchronized String getCellData(String sheetName,String colName,int rowNum){
 		try{
 			if(rowNum <=0)
 				return "";
@@ -124,7 +126,7 @@ public class ExcelWriter {
 	
 	// returns the row count in a sheet
 	// returns true if data is set successfully else false
-	public boolean setCellData(String sheetName,String colName,int rowNum, String data){
+	public synchronized boolean setCellData(String sheetName,String colName,int rowNum, String data){
 		try{
 		fis = new FileInputStream(path); 
 		workbook = new XSSFWorkbook(fis);
@@ -263,7 +265,7 @@ public class ExcelWriter {
 	}
 	
 	
-	public boolean setCellDataColNo(String sheetName,int colNo,int rowNum, String data){
+	public synchronized boolean setCellDataColNo(String sheetName,int colNo,int rowNum, String data){
 		try{
 		fis = new FileInputStream(path); 
 		workbook = new XSSFWorkbook(fis);
@@ -342,7 +344,7 @@ public class ExcelWriter {
 
 	
 	// returns true if data is set successfully else false
-	public boolean setCellData(String sheetName,String colName,int rowNum, String data,String url){
+	public synchronized boolean setCellData(String sheetName,String colName,int rowNum, String data,String url){
 		//System.out.println("setCellData setCellData******************");
 		try{
 		fis = new FileInputStream(path); 
@@ -419,7 +421,7 @@ public class ExcelWriter {
 	
 	
 	// returns true if sheet is created successfully else false
-	public boolean addSheet(String  sheetname){		
+	public synchronized boolean addSheet(String  sheetname){		
 		
 		FileOutputStream fileOut;
 		try {
@@ -430,7 +432,7 @@ public class ExcelWriter {
 			    	workbook.write(brOut);
 				    brOut.close();
 			    }catch(Exception e){
-			    	Thread.sleep(4000);
+			    	Thread.sleep(8000);
 			    	BufferedOutputStream brOut = new BufferedOutputStream(new FileOutputStream(path));
 			    	workbook.write(brOut);
 				    brOut.close();
@@ -471,7 +473,7 @@ public class ExcelWriter {
 		return true;
 	}
 	// returns true if column is created successfully
-	public boolean addColumn(String sheetName,String colName){
+	public synchronized boolean addColumn(String sheetName,String colName){
 		//System.out.println("**************addColumn*********************");
 		
 		try{				
@@ -526,7 +528,7 @@ public class ExcelWriter {
 	}
 	// removes a column and all the contents
   // find whether sheets exists	
-	public boolean isSheetExist(String sheetName){
+	public synchronized boolean isSheetExist(String sheetName){
 		int index = workbook.getSheetIndex(sheetName);
 		if(index==-1){
 			index=workbook.getSheetIndex(sheetName.toUpperCase());

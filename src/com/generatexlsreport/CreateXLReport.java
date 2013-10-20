@@ -133,6 +133,43 @@ public class CreateXLReport {
 				sdf = new SimpleDateFormat("MM-dd-yyyy h-mm-ss a");
 				formattedDate = sdf.format(date);
 			}
+			if(newResultSheetCreatedforTestSuite.get(currentTestSuite) == null){
+				newResultSheetCreatedforTestSuite.put(currentTestSuite, 0);
+			}
+	try{
+		if(newResultSheetCreatedforTestSuite.get(currentTestSuite)==0){
+			//System.out.println(formattedDate); // 12/01/2011 4:48:16 PM
+			ex.addSheet("RESULT-" + formattedDate);
+			Logging.log(String.format("New Result Sheet created in the %s excel with the name RESULT-%s",currentTestSuite,formattedDate));
+			newResultSheetCreatedforTestSuite.put(currentTestSuite, 1);
+		}
+	}catch(Exception e){
+		ErrorUtil.addVerificationFailure(e);
+		Logging.log("The excel file " +currentTestSuite+".xlsx "+ "maybe open, please close the excel file and re-run the test");
+		throw new CustomException("The excel file " +currentTestSuite+".xlsx "+ "maybe open, please close the excel file and re-run the test");
+	}
+			if(ex.getCellData("RESULT-" + formattedDate, 0, 1).equals("")){
+				String TCIDCol = xl.getCellData(CreatePropertiesObjects.XL.getProperty("TEST_SUITE_TESTSTEPS_SHEET_NAME"), 0, 1);
+				String KEYWORDCol = xl.getCellData(CreatePropertiesObjects.XL.getProperty("TEST_SUITE_TESTSTEPS_SHEET_NAME"), 2, 1);
+				String OBJECTCol = xl.getCellData(CreatePropertiesObjects.XL.getProperty("TEST_SUITE_TESTSTEPS_SHEET_NAME"), 3, 1);
+				String DATACol = xl.getCellData(CreatePropertiesObjects.XL.getProperty("TEST_SUITE_TESTSTEPS_SHEET_NAME"), 4, 1);
+				Logging.log("The result sheet name is RESULT-" +formattedDate);
+				if(ex.isSheetExist("RESULT-" + formattedDate)){
+					
+						Logging.log("The Result sheet exists - going inside the if condition Line 39 CreateXLReport");
+						ex.setCellDataColNo("RESULT-" + formattedDate, 0, 1, TCIDCol);
+						Logging.log(String.format("Inserting TCID value in resultsheet value = %s", TCIDCol));
+						
+						ex.setCellDataColNo("RESULT-" + formattedDate, 1, 1, KEYWORDCol);
+						Logging.log(String.format("Inserting KEYWORD value in resultsheet value = %s", KEYWORDCol));
+						
+						ex.setCellDataColNo("RESULT-" + formattedDate, 2, 1, OBJECTCol);
+						Logging.log(String.format("Inserting OBJECT value in resultsheet value = %s", OBJECTCol));
+						
+						ex.setCellDataColNo("RESULT-" + formattedDate, 3, 1, DATACol);
+						Logging.log(String.format("Inserting DATA value in resultsheet value = %s", DATACol));
+				}
+			}
 			
 			for(int rowNum=resultSheetLastPopulatedRow+1;rowNum <=xl.getRowCount(CreatePropertiesObjects.XL.getProperty("TEST_SUITE_TESTSTEPS_SHEET_NAME")); rowNum++){
 				if(xl.getCellData(CreatePropertiesObjects.XL.getProperty("TEST_SUITE_TESTSTEPS_SHEET_NAME"), 0, rowNum).equals(testName)){
@@ -162,7 +199,7 @@ public class CreateXLReport {
 							Logging.log("The excel file " +currentTestSuite+".xlsx "+ "maybe open, please close the excel file and re-run the test");
 							throw new CustomException("The excel file " +currentTestSuite+".xlsx "+ "maybe open, please close the excel file and re-run the test");
 						}
-							}
+					}
 				}
 			}
 			
@@ -170,7 +207,7 @@ public class CreateXLReport {
 			
 			Logging.log(String.format("Going to check the existence of Result column with testCaseDataSetNumber suffix , The testCaseDataSetNumber value is %s", testCaseDataSetNumber));
 			Logging.log(String.format("Get cell data for RESULT column returns value %s", xl.getCellData("RESULT-" + formattedDate, 3+testCaseDataSetNumber, 1)));
-			Logging.log(String.format("IS THE COLUMN RESULT"+testCaseDataSetNumber+"NOT PRESENT?  %s", xl.getCellData("RESULT-" + formattedDate, 3+testCaseDataSetNumber, 1).equals("")));
+			Logging.log(String.format("IS THE COLUMN RESULT"+testCaseDataSetNumber+"NOT PRESENT?  %s", ex.getCellData("RESULT-" + formattedDate, 3+testCaseDataSetNumber, 1).equals("")));
 			if(ex.getCellData("RESULT-" + formattedDate, 3+testCaseDataSetNumber, 1).equals("")){
 				ex.addColumn("RESULT-" + formattedDate, "RESULT"+testCaseDataSetNumber);
 				Logging.log("Adding new result column  in result sheet - " + "RESULT-" +formattedDate+ "Column name = RESULT" + testCaseDataSetNumber);
@@ -181,9 +218,9 @@ public class CreateXLReport {
 				if(ex.getCellData("RESULT-" + formattedDate, "TCID", rowNum).equals(testName))
 					ex.setCellDataColNo("RESULT-" + formattedDate, 3+testCaseDataSetNumber, rowNum, "SKIPPED");
 			}
-		
+		}
 				
-	}
+	
 	
 	
 	public static void deletePastResultSet(int lastRowExecuted,XLReader xl){

@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
 
+import org.testng.Assert;
+
 import com.config.CreatePropertiesObjects;
 import com.customexception.CustomException;
 import com.generatexlsreport.CreateXLReport;
@@ -22,6 +24,9 @@ public class ReadingTestStepsWithRunmode {
 	public static Method method[];
 	public static ArrayList<String> currentTestName = new ArrayList<String>();
 	
+	private static String MOZILLA = "1";
+	private static String CHROME = "2";
+	private static String IE = "3";
 	
 	public static boolean getRunModeOfTestCase(String testName, XLReader xls){
 		
@@ -110,30 +115,38 @@ public class ReadingTestStepsWithRunmode {
 				
 					for(int i=0;i < method.length; i++){
 						try{
-							if(method[i].getName().equals("do"+KEYWORD))
+							if(method[i].getName().equals("do"+KEYWORD)){
 								rowResult=(String)method[i].invoke(keyword,OBJECT,DATA, data);
 								testResultSet.add(rowResult);
+							}
 						}catch(Exception e){
 							Logging.log(String.format("%s in XL does not match with code for object %s and data %s", KEYWORD, OBJECT, DATA));
-							e.printStackTrace();
+							//e.printStackTrace();
 						    }
 						if(rowResult.contains(CreatePropertiesObjects.CONFIG.getProperty("DISCONTINUE_ON_FAIL"))){
+							rowResult = "";
 							lastTestStepRowExecuted = rowNum;
 							currentTestName.add(testName);
-							if(data.get("BROWSER").equals("1")){
+							if(data.get("BROWSER").equals(MOZILLA)){
 								ts.takeScreenShot(currentTestSuite+"_"+ testName +"_rownum_" +rowNum +"_"+ KEYWORD + "_"+formatteddate, SetBaseState.driverff);
 							}
-							else if(data.get("BROWSER").equals("2")){
+							else if(data.get("BROWSER").equals(CHROME)){
 								ts.takeScreenShot(currentTestSuite+"_"+testName +"_rownum_" +rowNum +"_"+ KEYWORD + "_"+formatteddate, SetBaseState.wbdvch);
 							}
-							else if(data.get("BROWSER").equals("3")){
+							else if(data.get("BROWSER").equals(IE)){
 								ts.takeScreenShot(currentTestSuite+"_"+testName +"_rownum_" +rowNum +"_"+ KEYWORD + "_"+formatteddate, SetBaseState.wbdvie);
+							}
+							try{
+								Assert.fail("Failing the test case iteration as test " + testName + " has failed at row - " + rowNum + " for KEYWORD - " +KEYWORD + " and input - " + DATA);
+							}catch(Throwable e){
+								ErrorUtil.addVerificationFailure(e);
 							}
 							CreateXLReport.insertResultSetInTestSteps(testName,currentTestSuite,testResultSet,xls,lastTestStepRowExecuted);
 							//ErrorUtil.addVerificationFailure(new CustomException((String.format("Skipping the rest of teststeps as execution FAILED on %s for keyword %s" , lastTestStepRowExecuted, KEYWORD))));
 							throw new CustomException(String.format("Skipping the rest of teststeps as execution FAILED on row number -  %s for keyword - %s" , lastTestStepRowExecuted, KEYWORD));
 						}
 						else if(rowResult.contains(CreatePropertiesObjects.CONFIG.getProperty("FAIL_VALUE"))){
+							rowResult = "";
 							if(data.get("BROWSER").equals(CreatePropertiesObjects.CONFIG.getProperty("FIREFOX"))){
 								ts.takeScreenShot(currentTestSuite+"_"+testName +"_rownum_" +rowNum +"_"+ KEYWORD + "_"+formatteddate, SetBaseState.driverff);
 							}
@@ -142,6 +155,11 @@ public class ReadingTestStepsWithRunmode {
 							}
 							else if(data.get("BROWSER").equals(CreatePropertiesObjects.CONFIG.getProperty("IE"))){
 								ts.takeScreenShot(currentTestSuite+"_"+testName +"_rownum_" +rowNum +"_"+ KEYWORD + "_"+formatteddate, SetBaseState.wbdvie);
+							}
+							try{
+								Assert.fail("Failing the test case iteration as test " + testName + " has failed at row - " + rowNum + " for KEYWORD - " +KEYWORD + " and input - " + DATA);
+							}catch(Throwable e){
+								ErrorUtil.addVerificationFailure(e);
 							}
 						}
 					}
