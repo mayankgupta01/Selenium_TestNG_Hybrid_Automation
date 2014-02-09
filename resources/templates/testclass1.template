@@ -1,0 +1,13 @@
+@BeforeClass
+	public void setTestCaseDataSetNumberToZero(){
+		CreateXLReport.testCaseDataSetNumber = 0;
+		
+	}
+	
+	@AfterClass
+	public void setTestCaseDataSetNumberToZeroAfterExecution(){
+		CreateXLReport.testCaseDataSetNumber = 0;
+	}
+	
+	@Test(dataProvider="getData")
+	
